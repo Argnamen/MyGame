@@ -14,7 +14,7 @@ public class Bow : Weapon
     {
         GameObject newObject = _diContainer.InstantiatePrefab((GameObject)Resources.Load("Prefab/Arrow"), spawner.Position, Quaternion.identity, null);
 
-        Projectile projectile = newObject.GetComponent<Arrow>().projectileObject = new Projectile(100, 1, 1f, new Weapon(TypeWeapon.Melee, "2", 10, 1, 0.1f, 10), spawner.Position, spawner.Environments);
+        Projectile projectile = newObject.GetComponent<Arrow>().projectileObject = new Projectile(100, 1, 1f, new Weapon(TypeWeapon.Melee, "2", 50, 1, 0.1f, 10), spawner.Position, spawner.Environments);
 
         newObject.GetComponent<Arrow>().projectileObject.Target = target;
         newObject.GetComponent<Arrow>().EnemyList = new List<Character>(targets);

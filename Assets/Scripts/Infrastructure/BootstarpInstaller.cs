@@ -20,6 +20,7 @@ namespace Assets.Scripts.Infrastructure
             Container.Bind<WorldsMap>().AsSingle();
             Container.Bind<Player>().AsSingle();
             Container.Bind<Weapon>().AsSingle();
+            Container.Bind<ItemsInWorld>().AsSingle();
 
             Container.Bind<Character>().To<TestCharacter>().AsSingle();
         }

@@ -5,26 +5,22 @@ using UnityEngine;
 
 public class Environment : MonoBehaviour
 {
-    public Enemy Enemy;
+    public Enemy Character;
 
     private Color32 DamageColor = new Color32(181, 0, 0, 255);
 
     private void Start()
     {
-        Enemy.DamageEvent.AddListener(() => UpdateBlickColor(DamageColor));
+        Character.DamageEvent.AddListener(() => UpdateBlickColor(DamageColor));
     }
 
     private void Update()
     {
-        if (Enemy.HP <= 0)
+        if (Character.HP <= 0)
         {
-            GameObject stone = Instantiate<GameObject>((GameObject)Resources.Load("Prefab/Stone"));
-
-            stone.transform.position = this.gameObject.transform.position;
-
             Destroy(this.gameObject);
 
-            Enemy.DamageEvent.RemoveAllListeners();
+            Character.DamageEvent.RemoveAllListeners();
 
             return;
         }

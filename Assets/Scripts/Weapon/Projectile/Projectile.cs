@@ -20,15 +20,7 @@ public class Projectile : Character
     }
     public Projectile(int healt, float spead, float size, Weapon weapon, Vector2 startPos, Environment[] environments) : base(healt, spead, size, weapon, startPos, environments)
     {
-        /*
-        newPos = new Vector2(
-                 Target.Position.x < _startPos.x && Target.Position.x > 0 || Target.Position.x > _startPos.x && Target.Position.x < 0 ?
-                    _startPos.x - Target.Position.normalized.x * _spead :
-                    _startPos.x + Target.Position.normalized.x * _spead,
-                 Target.Position.y < _startPos.y && Target.Position.y > 0 || Target.Position.y > _startPos.y && Target.Position.y < 0 ?
-                    _startPos.y - Target.Position.normalized.y * _spead :
-                    _startPos.y + Target.Position.normalized.y * _spead);
-        */
+
     }
 
     public virtual Vector2 Move()
@@ -63,7 +55,7 @@ public class Projectile : Character
 
         foreach (var env in Environments)
         {
-            if (env != null && (Vector2.Distance(newPos, env.transform.position) < env.Enemy.Size))
+            if (env != null && (Vector2.Distance(newPos, env.transform.position) < env.Character.Size))
             {
                 // Пересчёт вектора движения
                 if (Mathf.Abs(env.transform.position.x - newPos.x) <= Mathf.Abs(env.transform.position.y - newPos.y))

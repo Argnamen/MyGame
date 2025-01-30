@@ -6,25 +6,25 @@ using UnityEngine;
 
 public class Minion : MonoBehaviour
 {
-    public Enemy Enemy;
+    public Enemy Character;
 
     private Color32 DamageColor = new Color32(181, 0, 0, 255);
 
     private void Start()
     {
-        Enemy.DamageEvent.AddListener(() => UpdateBlickColor(DamageColor));
+        Character.DamageEvent.AddListener(() => UpdateBlickColor(DamageColor));
 
         StartCoroutine(AutoMove());
-        StartCoroutine(Enemy.Damage(new Character[1] { Enemy.PlayerCharacter.Character }, true));
+        StartCoroutine(Character.Damage(new Character[1] { Character.PlayerCharacter.Character }, true));
     }
 
     private void Update()
     {
-        if (Enemy.HP <= 0)
+        if (Character.HP <= 0)
         {
             Destroy(this.gameObject);
 
-            Enemy.DamageEvent.RemoveAllListeners();
+            Character.DamageEvent.RemoveAllListeners();
 
             return;
         }
@@ -48,8 +48,8 @@ public class Minion : MonoBehaviour
 
         while (true)
         {
-            if (Enemy != null)
-                this.transform.DOLocalMove(Enemy.MoveToPlayer(1f), 0.01f);
+            if (Character != null)
+                this.transform.DOLocalMove(Character.MoveToPlayer(1f), 0.01f);
             else
                 yield break;
 

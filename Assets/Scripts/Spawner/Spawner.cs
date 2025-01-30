@@ -46,18 +46,18 @@ public class Spawner: MonoBehaviour
 
         SpawnPlayer();
 
-        SpawnMinions(1);
+        SpawnMinions(0);
 
         UpdateSource();
 
         for (int i = 0; i < _minions.Count; i++)
         {
-            _player.EnemyList.Add(_minions[i].Enemy);
+            _player.EnemyList.Add(_minions[i].Character);
         }
 
         for (int i = 0; i < _environments.Count; i++)
         {
-            _player.EnemyList.Add(_environments[i].Enemy);
+            _player.EnemyList.Add(_environments[i].Character);
         }
     }
 
@@ -109,21 +109,27 @@ public class Spawner: MonoBehaviour
     {
         for (int i = 0; i < _environments.Count; i++)
         {
-            _environments[i].Enemy = new Rock(100, 0.1f, 1f, null, _environments[i].gameObject.transform.position, _player, _minions.ToArray(), i, _environments.ToArray());
+            _environments[i].Character = new Rock(100, 0.1f, 1f, null, _environments[i].gameObject.transform.position, _player, _minions.ToArray(), i, _environments.ToArray());
 
-            _diContainer.Inject(_environments[i].Enemy);
+            _environments[i].Character.Inventory = new Inventory();
+
+            _diContainer.Inject(_environments[i].Character);
         }
 
         for (int i = 0; i < _minions.Count; i++)
         {
-            _minions[i].Enemy = new TestEnemy(100, 0.01f, 1f, new Sword(TypeWeapon.Melee, "1", 0, 1f, 5f, 90), _minions[i].gameObject.transform.position, _player, _minions.ToArray(), i, _environments.ToArray());
+            _minions[i].Character = new TestEnemy(100, 0.01f, 1f, new Sword(TypeWeapon.Melee, "1", 0, 1f, 5f, 90), _minions[i].gameObject.transform.position, _player, _minions.ToArray(), i, _environments.ToArray());
 
-            _diContainer.Inject(_minions[i].Enemy);
+            _minions[i].Character.Inventory = new Inventory();
+
+            _diContainer.Inject(_minions[i].Character);
         }
 
-        Weapon playerWeapon = new Bow(TypeWeapon.Range, "1", 20, 2f, 5f, 90);
+        Weapon playerWeapon = new Bow(TypeWeapon.Range, "1", 10, 2f, 5f, 90);
 
         _player.Character = new TestCharacter(100, 0.1f, 1f, playerWeapon, Vector2.zero, _environments.ToArray());
+
+        _player.Character.Inventory = new Inventory();
 
         _diContainer.Inject(_player.Character);
 

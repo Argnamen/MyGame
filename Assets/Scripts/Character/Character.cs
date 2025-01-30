@@ -29,6 +29,8 @@ public abstract class Character
     public UnityEvent DamageEvent = new UnityEvent();
     public UnityEvent DeathEvent = new UnityEvent();
 
+    public Inventory Inventory;
+
     private bool _isDamageUpTime = false;
 
     [Inject]
@@ -59,7 +61,7 @@ public abstract class Character
 
         foreach (var env in _environments)
         {
-            if (env != null && (Vector2.Distance(newPos, env.transform.position) < env.Enemy._size))
+            if (env != null && (Vector2.Distance(newPos, env.transform.position) < env.Character._size))
                 return _startPos;
         }
 
