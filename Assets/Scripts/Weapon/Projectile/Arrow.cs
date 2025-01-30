@@ -8,11 +8,17 @@ public class Arrow : MonoBehaviour
     public Projectile projectileObject;
     public List<Character> EnemyList = new List<Character>();
 
+    private List<Coroutine> coroutines = new List<Coroutine>();
+
     private void Start()
     {
-        StartCoroutine(AutoMove());
+        coroutines.Add(StartCoroutine(AutoMove()));
 
-        StartCoroutine(projectileObject.Damage(EnemyList.ToArray(), true));
+        coroutines.Add(StartCoroutine(projectileObject.Damage(EnemyList.ToArray(), true)));
+
+        //coroutines.Add(StartCoroutine(DeathTimer())); 
+
+        projectileObject.DeathEvent.AddListener(Death);
     }
 
     private IEnumerator AutoMove()
@@ -28,5 +34,29 @@ public class Arrow : MonoBehaviour
 
             yield return new WaitForSeconds(0.01f);
         }
+    }
+
+    private IEnumerator DeathTimer()
+    {
+        while (true)
+        {
+            projectileObject.UpdateHP(-1);
+
+            yield return new WaitForSeconds(1f);
+
+            Debug.Log("AAAAAAAAAAAAAAAAAAAA");
+        }
+    }
+
+    private void Death()
+    {
+        foreach (var coroutine in coroutines)
+        {
+            StopCoroutine(coroutine);
+        }
+
+        projectileObject.DeathEvent.RemoveListener(Death);
+
+        Destroy(this.gameObject);
     }
 }

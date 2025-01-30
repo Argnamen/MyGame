@@ -27,6 +27,7 @@ public abstract class Character
 
 
     public UnityEvent DamageEvent = new UnityEvent();
+    public UnityEvent DeathEvent = new UnityEvent();
 
     private bool _isDamageUpTime = false;
 
@@ -79,6 +80,11 @@ public abstract class Character
             DamageEvent?.Invoke();
         }
         _healt += hp;
+
+        if(_healt <= 0)
+        {
+            DeathEvent?.Invoke();
+        }
     }
 
     private Vector2 UpdatePos(Direction direction)

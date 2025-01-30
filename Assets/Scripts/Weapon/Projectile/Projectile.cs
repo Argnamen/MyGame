@@ -57,6 +57,8 @@ public class Projectile : Character
             {
                 Vector = Vector2.Reflect(Vector, Vector2.up); // Отражение по оси Y
             }
+
+            UpdateHP(-10);
         }
 
         foreach (var env in Environments)
@@ -72,6 +74,8 @@ public class Projectile : Character
                 {
                     Vector = Vector2.Reflect(Vector, Vector2.up); // Отражение по оси Y
                 }
+
+                UpdateHP(-10);
             }
         }
 
