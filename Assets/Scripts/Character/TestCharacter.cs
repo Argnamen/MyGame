@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using Zenject;
 
@@ -34,5 +35,15 @@ public class TestCharacter : Character
         }
 
         return base.Move(direction);
+    }
+
+    public void UpdateWeapon(string id)
+    {
+        Weapon weapon = Inventory.GetAllItems().ToList().Find(x => x.ID == id).Weapon;
+
+        if (weapon != null)
+        {
+            Weapon = Inventory.GetAllItems().ToList().Find(x => x.ID == id).Weapon;
+        }
     }
 }

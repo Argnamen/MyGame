@@ -110,6 +110,23 @@ public class Player : MonoBehaviour
             this.transform.DOMove(Character.Move(global::Character.Direction.Left), 0.2f);
         }
 
+        if (Input.GetKey(KeyCode.Alpha1))
+        {
+            Debug.Log("Alpha1");
+            Character.UpdateWeapon("Sword");
+        }
+
+        if (Input.GetKey(KeyCode.Alpha2))
+        {
+            Debug.Log("Alpha2");
+            Character.UpdateWeapon("Bow");
+        }
+
+        if (Input.GetKey(KeyCode.I))
+        {
+            
+        }
+
         if (Input.GetKey(KeyCode.L))
         {
             Character.UpdateHP(-Character.HP);

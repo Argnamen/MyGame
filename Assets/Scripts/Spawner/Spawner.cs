@@ -75,9 +75,13 @@ public class Spawner: MonoBehaviour
 
         GameObject gameObject = null;
 
+        Weapon weapon = null;
+
         for (int i = 0; i < enemyCount; i++)
         {
             gameObject = Instantiate<GameObject>((GameObject)Resources.Load("Prefab/Enemy"));
+
+            weapon = new Sword(TypeWeapon.Melee, "Sword", 1, 2f, 5f, 90);
 
             _minions.Add(gameObject.GetComponent<Minion>());
 
@@ -86,11 +90,13 @@ public class Spawner: MonoBehaviour
                 Random.Range(-(world[_worldsMap.CurrentRoom].y * 2), world[_worldsMap.CurrentRoom].y * 2),
                 0);
 
-            _minions[i].Character = new TestEnemy(100, 0.01f, 1f, new Sword(TypeWeapon.Melee, "1", 0, 1f, 5f, 90), _minions[i].gameObject.transform.position, _player, _minions.ToArray(), i, _environments.ToArray());
+            _minions[i].Character = new TestEnemy(100, 0.01f, 1f, weapon, _minions[i].gameObject.transform.position, _player, _minions.ToArray(), i, _environments.ToArray());
 
             _minions[i].Character.Inventory = new Inventory();
 
             _minions[i].Character.Inventory.AddItem(new Item(ItemType.Resources, "Stone"));
+
+            _minions[i].Character.Inventory.AddItem(new Item(weapon));
 
             _diContainer.Inject(_minions[i].Character);
         }
@@ -127,13 +133,15 @@ public class Spawner: MonoBehaviour
     {
         GameObject gameObject = (GameObject)Resources.Load("Prefab/Player");
 
+        Weapon weapon = new Bow(TypeWeapon.Range, "Bow", 10, 2f, 5f, 90);
+
         _player = _diContainer.InstantiatePrefab(gameObject).GetComponent<Player>();
 
-        Weapon playerWeapon = new Bow(TypeWeapon.Range, "1", 10, 2f, 5f, 90);
-
-        _player.Character = new TestCharacter(100, 0.1f, 1f, playerWeapon, Vector2.zero, _environments.ToArray());
+        _player.Character = new TestCharacter(100, 0.1f, 1f, weapon, Vector2.zero, _environments.ToArray());
 
         _player.Character.Inventory = new Inventory();
+
+        _player.Character.Inventory.AddItem(new Item(weapon));
 
         _diContainer.Inject(_player.Character);
 
