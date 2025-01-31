@@ -7,6 +7,7 @@ using Zenject;
 public abstract class Character
 {
     private WorldsMap _worldsMap;
+    private ItemsInWorld _itemsInWorld;
 
     protected int _healt;
     protected float _spead;
@@ -34,9 +35,13 @@ public abstract class Character
     private bool _isDamageUpTime = false;
 
     [Inject]
-    public void Constuct(WorldsMap worldsMap)
+    private DiContainer _diContainer;
+
+    [Inject]
+    public void Constuct(WorldsMap worldsMap, ItemsInWorld itemsInWorld)
     {
         _worldsMap = worldsMap;
+        _itemsInWorld = itemsInWorld;
     }
 
     public Character(int healt, float spead, float size, Weapon weapon, Vector2 startPos, Environment[] environments)
@@ -49,6 +54,9 @@ public abstract class Character
         _size = size;
 
         Weapon = weapon;
+
+        if(Inventory == null)
+            Inventory = new Inventory();
     }
     public virtual Vector2 Move(Direction direction)
     {
@@ -85,7 +93,37 @@ public abstract class Character
 
         if(_healt <= 0)
         {
+            Item[] items = Inventory.GetAllItems();
+
+            DropItems(Inventory.GetAllItems());
+
             DeathEvent?.Invoke();
+        }
+    }
+
+    public void DropItems(Item[] items)
+    {
+        Item drop = null;
+
+        GameObject dropObject = null;
+
+        if (items == null || items.Length == 0)
+            return;
+
+        foreach (var item in items) 
+        {
+            drop = Inventory.DropItem(item);
+
+            if(drop != null)
+            {
+                dropObject = _diContainer.InstantiatePrefab((GameObject)Resources.Load($"Prefab/{drop.ID}"));
+
+                dropObject.transform.position = Position + Vector2.one * Random.value;
+
+                dropObject.GetComponent<ObjectInWorld>().Item = drop;
+
+                _itemsInWorld.PointsItems.Add(dropObject.transform.position, dropObject.GetComponent<ObjectInWorld>());
+            }
         }
     }
 

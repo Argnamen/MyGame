@@ -4,11 +4,16 @@ using UnityEngine;
 
 public class Item
 {
+    private string _id;
     private ItemType _type;
 
-    public Item(ItemType type)
+    public string ID => _id;
+    public ItemType Type => _type;
+
+    public Item(ItemType type, string id)
     {
         _type = type;
+        _id = id;
     }
 }
 

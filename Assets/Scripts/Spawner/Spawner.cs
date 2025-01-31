@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 using Zenject;
+using static UnityEditor.Progress;
 
 public class Spawner: MonoBehaviour
 {
@@ -46,9 +47,7 @@ public class Spawner: MonoBehaviour
 
         SpawnPlayer();
 
-        SpawnMinions(0);
-
-        UpdateSource();
+        SpawnMinions(10);
 
         for (int i = 0; i < _minions.Count; i++)
         {
@@ -74,14 +73,26 @@ public class Spawner: MonoBehaviour
     {
         List<Vector3> world = _worldsMap.GetWorld(1);
 
+        GameObject gameObject = null;
+
         for (int i = 0; i < enemyCount; i++)
         {
-            _minions.Add(Instantiate<GameObject>((GameObject)Resources.Load("Prefab/Enemy")).GetComponent<Minion>());
+            gameObject = Instantiate<GameObject>((GameObject)Resources.Load("Prefab/Enemy"));
 
-            _minions[i].gameObject.transform.position = new Vector3(
+            _minions.Add(gameObject.GetComponent<Minion>());
+
+            gameObject.transform.position = new Vector3(
                 Random.Range(-(world[_worldsMap.CurrentRoom].x * 2), world[_worldsMap.CurrentRoom].x * 2),
                 Random.Range(-(world[_worldsMap.CurrentRoom].y * 2), world[_worldsMap.CurrentRoom].y * 2),
                 0);
+
+            _minions[i].Character = new TestEnemy(100, 0.01f, 1f, new Sword(TypeWeapon.Melee, "1", 0, 1f, 5f, 90), _minions[i].gameObject.transform.position, _player, _minions.ToArray(), i, _environments.ToArray());
+
+            _minions[i].Character.Inventory = new Inventory();
+
+            _minions[i].Character.Inventory.AddItem(new Item(ItemType.Resources, "Stone"));
+
+            _diContainer.Inject(_minions[i].Character);
         }
     }
 
@@ -89,41 +100,34 @@ public class Spawner: MonoBehaviour
     {
         List<Vector3> world = _worldsMap.GetWorld(1);
 
+        GameObject gameObject = null;
+
         for (int i = 0; i < enemyCount; i++)
         {
-            _environments.Add(Instantiate<GameObject>((GameObject)Resources.Load("Prefab/Rock")).GetComponent<Environment>());
+            gameObject = Instantiate<GameObject>((GameObject)Resources.Load("Prefab/Rock"));
 
-            _environments[i].gameObject.transform.position = new Vector3(
+            _environments.Add(gameObject.GetComponent<Environment>());
+
+            gameObject.transform.position = new Vector3(
                 Random.Range(-(world[_worldsMap.CurrentRoom].x * 2), world[_worldsMap.CurrentRoom].x * 2),
                 Random.Range(-(world[_worldsMap.CurrentRoom].y * 2), world[_worldsMap.CurrentRoom].y * 2),
                 0);
+
+            _environments[i].Character = new Rock(100, 0.1f, 1f, null, _environments[i].gameObject.transform.position, _player, _minions.ToArray(), i, _environments.ToArray());
+
+            _environments[i].Character.Inventory = new Inventory();
+
+            _environments[i].Character.Inventory.AddItem(new Item(ItemType.Resources, "Stone"));
+
+            _diContainer.Inject(_environments[i].Character);
         }
     }
 
     public void SpawnPlayer()
     {
-        _player = _diContainer.InstantiatePrefab((GameObject)Resources.Load("Prefab/Player")).GetComponent<Player>();        
-    }
+        GameObject gameObject = (GameObject)Resources.Load("Prefab/Player");
 
-    private void UpdateSource()
-    {
-        for (int i = 0; i < _environments.Count; i++)
-        {
-            _environments[i].Character = new Rock(100, 0.1f, 1f, null, _environments[i].gameObject.transform.position, _player, _minions.ToArray(), i, _environments.ToArray());
-
-            _environments[i].Character.Inventory = new Inventory();
-
-            _diContainer.Inject(_environments[i].Character);
-        }
-
-        for (int i = 0; i < _minions.Count; i++)
-        {
-            _minions[i].Character = new TestEnemy(100, 0.01f, 1f, new Sword(TypeWeapon.Melee, "1", 0, 1f, 5f, 90), _minions[i].gameObject.transform.position, _player, _minions.ToArray(), i, _environments.ToArray());
-
-            _minions[i].Character.Inventory = new Inventory();
-
-            _diContainer.Inject(_minions[i].Character);
-        }
+        _player = _diContainer.InstantiatePrefab(gameObject).GetComponent<Player>();
 
         Weapon playerWeapon = new Bow(TypeWeapon.Range, "1", 10, 2f, 5f, 90);
 

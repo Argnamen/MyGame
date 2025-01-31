@@ -110,6 +110,11 @@ public class Player : MonoBehaviour
             this.transform.DOMove(Character.Move(global::Character.Direction.Left), 0.2f);
         }
 
+        if (Input.GetKey(KeyCode.L))
+        {
+            Character.UpdateHP(-Character.HP);
+        }
+
         CameraMove();
     }
 }

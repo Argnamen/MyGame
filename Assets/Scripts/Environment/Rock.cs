@@ -16,14 +16,14 @@ public class Rock : Enemy
     }
     public Rock(int healt, float spead, float size, Weapon weapon, Vector2 startPos, Player player, Minion[] minion, int numberMinion, Environment[] environments) : base(healt, spead, size, weapon, startPos, player, minion, numberMinion, environments)
     {
-        DeathEvent.AddListener(Death);
+        //DeathEvent.AddListener(Death);
     }
 
     private void Death()
     {
         GameObject stone = _diContainer.InstantiatePrefab(Resources.Load("Prefab/Stone"));
 
-        Item item = new Item(ItemType.Resources);
+        Item item = new Item(ItemType.Resources, "Stone");
 
         stone.transform.position = Position;
 
