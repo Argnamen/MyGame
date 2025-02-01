@@ -1,13 +1,17 @@
-using System.Collections;
-using System.Collections.Generic;
+using Dungeon;
+using UnityEngine.InputSystem;
 using UnityEngine;
 using Zenject;
-using Dungeon;
+using Cinemachine;
 
 namespace Assets.Scripts.Infrastructure
 {
-    public class BootstarpInstaller: MonoInstaller
+    public class BootstarpInstaller : MonoInstaller
     {
+        [SerializeField] private PlayerInput _playerInput;
+        //[SerializeField] private CinemachineInputProvider _cinemachineInputProvider;
+        [SerializeField] private Camera _mainCamera;
+        [SerializeField] private CinemachineVirtualCamera _cinemachineVirtualCamera;
         public override void InstallBindings()
         {
             Container.Bind<Test2>().AsSingle();
@@ -22,7 +26,13 @@ namespace Assets.Scripts.Infrastructure
             Container.Bind<Weapon>().AsSingle();
             Container.Bind<ItemsInWorld>().AsSingle();
 
-            Container.Bind<Character>().To<TestCharacter>().AsSingle();
+            Container.Bind<PlayerInput>().FromInstance(_playerInput).AsSingle();
+            //Container.Bind<CinemachineInputProvider>().FromInstance(_cinemachineInputProvider).AsSingle();
+            Container.Bind<Camera>().FromInstance(_mainCamera).AsSingle();
+            Container.Bind<CinemachineVirtualCamera>().FromInstance(_cinemachineVirtualCamera).AsSingle();
         }
     }
 }
+
+
+

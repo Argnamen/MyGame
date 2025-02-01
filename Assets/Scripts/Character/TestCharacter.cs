@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using Zenject;
@@ -13,16 +11,16 @@ public class TestCharacter : Character
         _itemsInWorld = itemsInWorld;
     }
 
-    public TestCharacter(int healt, float spead,float size, Weapon weapon, Vector2 startPos, Environment[] environments) : base(healt, spead, size, weapon, startPos, environments)
+    public TestCharacter(int healt, float spead, float size, Weapon weapon, Vector2 startPos, Environment[] environments)
+        : base(healt, spead, size, weapon, startPos, environments)
     {
-
     }
 
     public override Vector2 Move(Direction direction)
     {
         foreach (var item in _itemsInWorld.PointsItems)
         {
-            if(Vector2.Distance(item.Key, Position) <= Size)
+            if (Vector2.Distance(item.Key, Position) <= Size)
             {
                 Inventory.AddItem(item.Value.Item);
 
@@ -46,4 +44,6 @@ public class TestCharacter : Character
             Weapon = Inventory.GetAllItems().ToList().Find(x => x.ID == id).Weapon;
         }
     }
+
+    public class Factory : PlaceholderFactory<int, float, float, Weapon, Vector2, Environment[], TestCharacter> { }
 }

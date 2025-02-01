@@ -1,11 +1,11 @@
-using System.Collections;
+using Cinemachine;
 using System.Collections.Generic;
-using Unity.VisualScripting;
+using UnityEngine.InputSystem;
 using UnityEngine;
 using Zenject;
-using static UnityEditor.Progress;
+using System.Collections;
 
-public class Spawner: MonoBehaviour
+public class Spawner : MonoBehaviour
 {
     private MinionList _enemys;
     private PlayerModels _playerModels;
@@ -47,7 +47,7 @@ public class Spawner: MonoBehaviour
 
         SpawnPlayer();
 
-        SpawnMinions(10);
+        SpawnMinions(0);
 
         for (int i = 0; i < _minions.Count; i++)
         {
@@ -137,14 +137,51 @@ public class Spawner: MonoBehaviour
 
         _player = _diContainer.InstantiatePrefab(gameObject).GetComponent<Player>();
 
-        _player.Character = new TestCharacter(100, 0.1f, 1f, weapon, Vector2.zero, _environments.ToArray());
+        TestCharacter playerCharacter = new TestCharacter(100, 0.1f, 1f, weapon, Vector2.zero, _environments.ToArray());
 
-        _player.Character.Inventory = new Inventory();
+        playerCharacter.Inventory = new Inventory();
+        playerCharacter.Inventory.AddItem(new Item(weapon));
 
-        _player.Character.Inventory.AddItem(new Item(weapon));
+        _player.Character = playerCharacter;
 
-        _diContainer.Inject(_player.Character);
-
+        _diContainer.Inject(playerCharacter);
         _diContainer.Inject(_player.Character.Weapon);
+
+        _diContainer.Inject(_player);
+
+        var playerInput = ProjectContext.Instance.Container.Resolve<PlayerInput>();
+        if (playerInput == null)
+        {
+            Debug.LogError("PlayerInput is null in ProjectContext!");
+            return;
+        }
+
+        //var inputProvider = ProjectContext.Instance.Container.Resolve<CinemachineInputProvider>();
+
+        var virtualCamera = ProjectContext.Instance.Container.Resolve<CinemachineVirtualCamera>();
+
+        var playerTransform = _player.transform;
+
+        var inputService = new InputService(playerInput, playerCharacter, playerTransform, virtualCamera);
+
+        _player.SetInputService(inputService);
+
+        SetupVirtualCamera(virtualCamera, playerTransform);
     }
+
+    public void SetupVirtualCamera(CinemachineVirtualCamera virtualCamera, Transform playerTransform)
+    {
+        if (virtualCamera != null)
+        {
+            virtualCamera.Follow = playerTransform;
+            virtualCamera.LookAt = playerTransform;
+        }
+    }
+
+
+
+
+
+
 }
+

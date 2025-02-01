@@ -1,8 +1,8 @@
-using DG.Tweening;
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.UI;
+using UnityEngine.InputSystem;
+using DG.Tweening;
 using Zenject;
 
 public class Player : MonoBehaviour
@@ -19,12 +19,14 @@ public class Player : MonoBehaviour
     private Color32 DamageColor = new Color32(181, 0, 0, 255);
     private Color32 DefautColor = new Color32(255, 255, 255, 255);
 
-    [SerializeField] private Camera _camera;
+    private InputService _inputService;
 
     [Inject]
-    public void Construct()
+    public void Construct() { }
+
+    public void SetInputService(InputService inputService)
     {
-        
+        _inputService = inputService;
     }
 
     private IEnumerator DamageLag()
@@ -43,18 +45,6 @@ public class Player : MonoBehaviour
         _cameraUpdate = true;
     }
 
-    private void CameraMove()
-    {
-        Vector2 cameraDefauldPos = new Vector2(_camera.transform.position.x, _camera.transform.position.y + 5);
-        float distance = Vector2.Distance(Character.Position, cameraDefauldPos);
-
-        if (Mathf.Abs(distance) >= 2 || _cameraUpdate)
-        {
-            _camera.transform.DOMove(new Vector3(this.transform.position.x, this.transform.position.y - 5, _camera.transform.position.z), 0.2f);
-            StartCoroutine(UpdateCameraPos());
-        }
-    }
-
     private void UpdateBlickColor(Color32 color32)
     {
         Sequence sequence = DOTween.Sequence();
@@ -67,13 +57,8 @@ public class Player : MonoBehaviour
         sequence.Append(spriteRenderer.DOColor(baseColor, 0.1f));
     }
 
-
     private void Start()
     {
-        _camera = Camera.main;
-
-        _camera.transform.position = new Vector3(this.transform.position.x, this.transform.position.y - 5, _camera.transform.position.z);
-
         Character.DamageEvent.AddListener(() => UpdateBlickColor(DamageColor));
 
         StartCoroutine(Character.Damage(EnemyList.ToArray(), true));
@@ -90,48 +75,12 @@ public class Player : MonoBehaviour
             return;
         }
 
-        if (Input.GetKey(KeyCode.W))
-        {
-            this.transform.DOMove(Character.Move(global::Character.Direction.Up), 0.2f); 
-        }
-
-        if (Input.GetKey(KeyCode.S))
-        {
-            this.transform.DOMove(Character.Move(global::Character.Direction.Down), 0.2f);
-        }
-
-        if (Input.GetKey(KeyCode.D))
-        {
-            this.transform.DOMove(Character.Move(global::Character.Direction.Right), 0.2f);
-        }
-
-        if (Input.GetKey(KeyCode.A))
-        {
-            this.transform.DOMove(Character.Move(global::Character.Direction.Left), 0.2f);
-        }
-
-        if (Input.GetKey(KeyCode.Alpha1))
-        {
-            Debug.Log("Alpha1");
-            Character.UpdateWeapon("Sword");
-        }
-
-        if (Input.GetKey(KeyCode.Alpha2))
-        {
-            Debug.Log("Alpha2");
-            Character.UpdateWeapon("Bow");
-        }
-
-        if (Input.GetKey(KeyCode.I))
-        {
-            
-        }
-
-        if (Input.GetKey(KeyCode.L))
-        {
-            Character.UpdateHP(-Character.HP);
-        }
-
-        CameraMove();
+        // Вызываем метод обработки ввода из InputService
+        _inputService.Update();
     }
 }
+
+
+
+
+
