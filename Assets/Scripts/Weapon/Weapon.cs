@@ -14,8 +14,6 @@ public class Weapon
 
     public TypeWeapon Type;
 
-    protected Spawner _spawner;
-
     [Inject]
     protected DiContainer _diContainer;
 

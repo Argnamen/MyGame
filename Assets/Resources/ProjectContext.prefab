@@ -9,6 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4440900004455658009}
+  - component: {fileID: 6245530052666800885}
   m_Layer: 0
   m_Name: GameStateMachine
   m_TagString: Untagged
@@ -31,6 +32,18 @@ Transform:
   m_Children: []
   m_Father: {fileID: 500077420751255923}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &6245530052666800885
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2138541290364139457}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9e95bf2a90b553c4c9f8c9a4c4d1e568, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &3016925931343109712
 GameObject:
   m_ObjectHideFlags: 0
@@ -561,6 +574,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _scriptableObjectInstallers: []
   _monoInstallers:
+  - {fileID: 6245530052666800885}
   - {fileID: -4896838423732732878}
   - {fileID: 7915803129789186465}
   - {fileID: 734865637325191384}
@@ -593,3 +607,4 @@ MonoBehaviour:
   _playerInput: {fileID: 5113145381368185093}
   _mainCamera: {fileID: 8962543356086725026}
   _cinemachineVirtualCamera: {fileID: 3971513081909445143}
+  _playerPrefab: {fileID: -7077160291603625119, guid: c2d601092cf83054489c3edd6f9bf0c3, type: 3}

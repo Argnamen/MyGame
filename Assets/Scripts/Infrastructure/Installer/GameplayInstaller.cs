@@ -16,6 +16,7 @@ public class GameplayInstaller : MonoInstaller
         BindTestCharacterFactory();
     }
 
+
     private void BindCameraService()
     {
         Container.BindInterfacesAndSelfTo<CameraService>()
@@ -53,6 +54,7 @@ public class GameplayInstaller : MonoInstaller
             return character;
         }
     }
+
 }
 
 

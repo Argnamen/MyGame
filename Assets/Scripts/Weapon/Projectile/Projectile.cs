@@ -6,21 +6,19 @@ using Zenject;
 public class Projectile : Character
 {
     public Character Target;
-
     public Vector2 Vector;
-
     private bool isFirstStart = true;
-
-    WorldsMap _worldsMap;
+    private WorldsMap _worldsMap;
 
     [Inject]
-    public void Constuct(WorldsMap worldsMap)
+    public void Construct(WorldsMap worldsMap)
     {
         _worldsMap = worldsMap;
     }
-    public Projectile(int healt, float spead, float size, Weapon weapon, Vector2 startPos, Environment[] environments) : base(healt, spead, size, weapon, startPos, environments)
-    {
 
+    public Projectile(int healt, float spead, float size, Weapon weapon, Vector2 startPos, Environment[] environments, IStaticDataService staticDataService, ItemsInWorld itemsInWorld)
+        : base(healt, spead, size, weapon, startPos, environments, staticDataService, itemsInWorld)
+    {
     }
 
     public virtual Vector2 Move()
@@ -31,7 +29,6 @@ public class Projectile : Character
         {
             newPos = Vector2.zero;
             isFirstStart = false;
-
             Vector = (Target.Position - _startPos).normalized * _spead;
         }
 
@@ -72,11 +69,8 @@ public class Projectile : Character
         }
 
         newPos = _startPos + Vector * _spead;
-
         _startPos = newPos;
 
         return newPos;
     }
-
-
 }

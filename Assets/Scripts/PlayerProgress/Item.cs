@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[System.Serializable]
 public class Item
 {
     private string _id;
@@ -10,7 +11,6 @@ public class Item
 
     public string ID => _id;
     public ItemType Type => _type;
-
     public Weapon Weapon => _weapon;
 
     public Item(ItemType type, string id)
@@ -29,5 +29,7 @@ public class Item
 
 public enum ItemType
 {
-    Resources, Item
+    Resources,
+    Item
 }
+

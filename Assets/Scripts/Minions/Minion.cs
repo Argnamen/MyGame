@@ -1,7 +1,5 @@
 using DG.Tweening;
-using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Minion : MonoBehaviour
@@ -15,7 +13,7 @@ public class Minion : MonoBehaviour
         Character.DamageEvent.AddListener(() => UpdateBlickColor(DamageColor));
 
         StartCoroutine(AutoMove());
-        StartCoroutine(Character.Damage(new Character[1] { Character.PlayerCharacter.Character }, true));
+        StartCoroutine(Character.Damage(new Character[1] { Character.Target }, true));
     }
 
     private void Update()
@@ -23,9 +21,7 @@ public class Minion : MonoBehaviour
         if (Character.HP <= 0)
         {
             Destroy(this.gameObject);
-
             Character.DamageEvent.RemoveAllListeners();
-
             return;
         }
     }
@@ -33,9 +29,7 @@ public class Minion : MonoBehaviour
     private void UpdateBlickColor(Color32 color32)
     {
         Sequence sequence = DOTween.Sequence();
-
         SpriteRenderer spriteRenderer = this.gameObject.GetComponent<SpriteRenderer>();
-
         Color32 baseColor = spriteRenderer.color;
 
         sequence.Append(spriteRenderer.DOColor(color32, 0.1f));
@@ -49,7 +43,7 @@ public class Minion : MonoBehaviour
         while (true)
         {
             if (Character != null)
-                this.transform.DOLocalMove(Character.MoveToPlayer(1f), 0.01f);
+                this.transform.DOLocalMove(Character.MoveToTarget(1f), 0.01f);
             else
                 yield break;
 

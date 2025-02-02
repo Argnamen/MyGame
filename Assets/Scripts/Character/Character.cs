@@ -6,7 +6,7 @@ using Zenject;
 
 public abstract class Character
 {
-    private WorldsMap _worldsMap;
+    private IStaticDataService _staticDataService;
     private ItemsInWorld _itemsInWorld;
 
     protected int _healt;
@@ -21,26 +21,19 @@ public abstract class Character
 
     public int HP => _healt;
     public float Size => _size;
-
     public Vector2 Position => _startPos;
-
     public Environment[] Environments => _environments;
-
 
     public UnityEvent DamageEvent = new UnityEvent();
     public UnityEvent DeathEvent = new UnityEvent();
-
     public Inventory Inventory;
 
     private bool _isDamageUpTime = false;
 
     [Inject]
-    private DiContainer _diContainer;
-
-    [Inject]
-    public void Constuct(WorldsMap worldsMap, ItemsInWorld itemsInWorld)
+    public void Construct(IStaticDataService staticDataService, ItemsInWorld itemsInWorld)
     {
-        _worldsMap = worldsMap;
+        _staticDataService = staticDataService;
         _itemsInWorld = itemsInWorld;
     }
 
@@ -52,19 +45,33 @@ public abstract class Character
         _environments = environments;
 
         _size = size;
-
         Weapon = weapon;
 
-        if(Inventory == null)
-            Inventory = new Inventory();
+        Inventory = new Inventory();
     }
+
+    public Character(int healt, float spead, float size, Weapon weapon, Vector2 startPos, Environment[] environments, IStaticDataService staticDataService, ItemsInWorld itemsInWorld)
+    {
+        _healt = healt;
+        _spead = spead;
+        _startPos = startPos;
+        _environments = environments;
+        _staticDataService = staticDataService;
+        _itemsInWorld = itemsInWorld;
+
+        _size = size;
+        Weapon = weapon;
+
+        Inventory = new Inventory();
+    }
+
     public virtual Vector2 Move(Direction direction)
     {
         Vector2 newPos = UpdatePos(direction);
 
-        int world = _worldsMap.CorrectWorld;
+        int world = _staticDataService.CurrentRoom;
 
-        if ( _worldsMap.GetWorld(world)[0].x * 2 < Mathf.Abs(newPos.x) || _worldsMap.GetWorld(world)[0].y * 2 < Mathf.Abs(newPos.y))
+        if (_staticDataService.GetWorld(world)[0].x * 2 < Mathf.Abs(newPos.x) || _staticDataService.GetWorld(world)[0].y * 2 < Mathf.Abs(newPos.y))
             return _startPos;
 
         foreach (var env in _environments)
@@ -91,37 +98,27 @@ public abstract class Character
         }
         _healt += hp;
 
-        if(_healt <= 0)
+        if (_healt <= 0)
         {
             Item[] items = Inventory.GetAllItems();
-
-            DropItems(Inventory.GetAllItems());
-
+            DropItems(items);
             DeathEvent?.Invoke();
         }
     }
 
     public void DropItems(Item[] items)
     {
-        Item drop = null;
-
-        GameObject dropObject = null;
-
         if (items == null || items.Length == 0)
             return;
 
-        foreach (var item in items) 
+        foreach (var item in items)
         {
-            drop = Inventory.DropItem(item);
-
-            if(drop != null)
+            var drop = Inventory.DropItem(item);
+            if (drop != null)
             {
-                dropObject = _diContainer.InstantiatePrefab((GameObject)Resources.Load($"Prefab/{drop.ID}"));
-
+                var dropObject = (GameObject)Resources.Load($"Prefab/{drop.ID}");
                 dropObject.transform.position = Position + Vector2.one * Random.value;
-
                 dropObject.GetComponent<ObjectInWorld>().Item = drop;
-
                 _itemsInWorld.PointsItems.Add(dropObject.transform.position, dropObject.GetComponent<ObjectInWorld>());
             }
         }
@@ -180,7 +177,7 @@ public abstract class Character
                             minDistance = distance;
                             centralEnemy = evilCharacters[i];
                         }
-                        else if(centralEnemy == null || (minDistance <= Weapon.Radius && evilCharacters[i].HP < lowestHP))
+                        else if (centralEnemy == null || (minDistance <= Weapon.Radius && evilCharacters[i].HP < lowestHP))
                         {
                             centralEnemy = evilCharacters[i];
                             lowestHP = evilCharacters[i].HP;
@@ -241,3 +238,4 @@ public abstract class Character
         None, Up, Down, Left, Right
     }
 }
+
