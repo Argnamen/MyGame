@@ -12,22 +12,23 @@ public class HeroFactory : IHeroFactory
     private Player _player;
     private IStaticDataService _staticDataService;
     private ItemsInWorld _itemsInWorld;
-    private Player _createdHero;
+    private CameraService _cameraService;
 
-    public HeroFactory(DiContainer diContainer, List<Minion> minions, List<Environment> environments, IStaticDataService staticDataService, ItemsInWorld itemsInWorld)
+    public HeroFactory(DiContainer diContainer, List<Minion> minions, List<Environment> environments, IStaticDataService staticDataService, ItemsInWorld itemsInWorld, CameraService cameraService)
     {
         _diContainer = diContainer;
         _minions = minions;
         _environments = environments;
         _staticDataService = staticDataService;
         _itemsInWorld = itemsInWorld;
+        _cameraService = cameraService;
     }
 
     public Player CreateHero()
     {
-        if (_createdHero != null)
+        if (_player != null)
         {
-            return _createdHero;
+            return _player;
         }
 
         var playerPrefab = _diContainer.Resolve<Player>();
@@ -57,19 +58,18 @@ public class HeroFactory : IHeroFactory
 
         var virtualCamera = ProjectContext.Instance.Container.Resolve<CinemachineVirtualCamera>();
         var playerTransform = _player.transform;
-        var inputService = new InputService(playerInput, playerCharacter, playerTransform, virtualCamera);
+        var inputService = new InputService(playerInput, _player, playerTransform, _cameraService);
 
         _player.SetInputService(inputService);
         SetupVirtualCamera(virtualCamera, playerTransform);
 
         Debug.Log("Hero created successfully.");
-        _createdHero = _player;
         return _player;
     }
 
     public Player GetHero()
     {
-        return _createdHero ?? CreateHero();
+        return _player ?? CreateHero();
     }
 
     private void SetupVirtualCamera(CinemachineVirtualCamera virtualCamera, Transform playerTransform)

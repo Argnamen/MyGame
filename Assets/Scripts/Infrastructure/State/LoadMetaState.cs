@@ -17,7 +17,6 @@ public class LoadMetaState : IState, IExitableState
         _stateMachine = stateMachine;
         _uiFactory = uiFactory;
         _sceneLoader = sceneLoader;
-        _heroFactory = heroFactory;
         _stageFactory = stageFactory;
     }
 

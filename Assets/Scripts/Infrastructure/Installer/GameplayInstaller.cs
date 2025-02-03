@@ -11,18 +11,11 @@ public class GameplayInstaller : MonoInstaller
 
     public override void InstallBindings()
     {
-        BindCameraService();
         //BindInventory();
         BindTestCharacterFactory();
-    }
 
 
-    private void BindCameraService()
-    {
-        Container.BindInterfacesAndSelfTo<CameraService>()
-            .AsSingle()
-            .WithArguments(_mainCamera)
-            .NonLazy();
+        Container.Bind<CameraService>().AsSingle();
     }
 
     private void BindInventory()

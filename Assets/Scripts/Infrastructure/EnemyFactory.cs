@@ -22,7 +22,7 @@ public class EnemyFactory : IEnemyFactory
 
     public void CreateEnemies(int count)
     {
-        List<Vector3> world = _staticDataService.GetWorld(1);
+        List<Vector3> world = _staticDataService.GetWorld(_staticDataService.CurrentRoom);
         GameObject gameObject = null;
         Weapon weapon = null;
 
@@ -63,7 +63,7 @@ public class EnemyFactory : IEnemyFactory
 
 public interface IEnemyFactory
 {
-    void CreateEnemies();
+    void CreateEnemies(int count);
 }
 
 

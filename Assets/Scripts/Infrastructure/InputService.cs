@@ -6,23 +6,24 @@ using DG.Tweening;
 public class InputService
 {
     private readonly PlayerInput _playerInput;
-    private readonly CinemachineInputProvider _inputProvider;
-    private readonly Character _character;
+    private readonly Player _player;
     private readonly Transform _playerTransform;
-    private readonly CinemachineVirtualCamera _virtualCamera;
+    private readonly CameraService _cameraService;
 
     private Vector2 _moveInput;
 
-    public InputService(PlayerInput playerInput, Character character, Transform playerTransform, CinemachineVirtualCamera virtualCamera)
+    public InputService(PlayerInput playerInput, Player player, Transform playerTransform, CameraService cameraService)
     {
         _playerInput = playerInput;
-        //_inputProvider = inputProvider;
-        _character = character;
+        _player = player;
         _playerTransform = playerTransform;
-        _virtualCamera = virtualCamera;
+        _cameraService = cameraService;
 
         _playerInput.actions["Move"].performed += OnMovePerformed;
         _playerInput.actions["Move"].canceled += OnMoveCanceled;
+
+        _playerInput.actions["LookAt"].performed += OnLookAtPerformed;
+        _playerInput.actions["LookAt"].canceled += OnLookAtCanceled;
     }
 
 
@@ -36,6 +37,20 @@ public class InputService
         _moveInput = Vector2.zero;
     }
 
+    private void OnLookAtPerformed(InputAction.CallbackContext context)
+    {
+        Debug.Log("LookAt Enemy");
+
+        _cameraService.LookAt(_player.Character.GetClosestEnemy());
+    }
+
+    private void OnLookAtCanceled(InputAction.CallbackContext context)
+    {
+        Debug.Log("LookAt Player");
+
+        _cameraService.LookAt(_playerTransform.position);
+    }
+
     public void Update()
     {
         if (_moveInput != Vector2.zero)
@@ -46,24 +61,24 @@ public class InputService
 
     private void HandleMovement(Vector2 moveInput)
     {
-        Vector2 newPos = _character.Position;
+        Vector2 newPos = _player.Character.Position;
 
         if (moveInput.y > 0) // W
         {
-            newPos = _character.Move(Character.Direction.Up);
+            newPos = _player.Character.Move(Character.Direction.Up);
         }
         else if (moveInput.y < 0) // S
         {
-            newPos = _character.Move(Character.Direction.Down);
+            newPos = _player.Character.Move(Character.Direction.Down);
         }
 
         if (moveInput.x > 0) // D
         {
-            newPos = _character.Move(Character.Direction.Right);
+            newPos = _player.Character.Move(Character.Direction.Right);
         }
         else if (moveInput.x < 0) // A
         {
-            newPos = _character.Move(Character.Direction.Left);
+            newPos = _player.Character.Move(Character.Direction.Left);
         }
 
         _playerTransform.DOMove(newPos, 0.2f);

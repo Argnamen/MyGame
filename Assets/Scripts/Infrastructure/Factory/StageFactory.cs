@@ -20,16 +20,9 @@ public class StageFactory : IStageFactory
 
     public void CreateStage()
     {
+        List<Vector3> world = _staticDataService.GetWorld(_staticDataService.CurrentRoom);
+
         _player = _heroFactory.GetHero();
-        if (_player.Character == null)
-        {
-            Debug.LogError("PlayerCharacter is null after hero creation.");
-            return;
-        }
-
-        Debug.Log("Player created successfully.");
-
-        List<Vector3> world = _staticDataService.GetWorld(1);
 
         for (int i = 0; i < world.Count; i++)
         {
@@ -50,7 +43,7 @@ public class StageFactory : IStageFactory
 
     private void SpawnEnvironment(int count)
     {
-        List<Vector3> world = _staticDataService.GetWorld(1);
+        List<Vector3> world = _staticDataService.GetWorld(_staticDataService.CurrentRoom);
 
         for (int i = 0; i < count; i++)
         {
@@ -59,11 +52,6 @@ public class StageFactory : IStageFactory
             _environments.Add(environmentComponent);
 
             int currentRoomIndex = _staticDataService.CurrentRoom;
-            if (currentRoomIndex < 0 || currentRoomIndex >= world.Count)
-            {
-                Debug.LogError("CurrentRoom index is out of range.");
-                return;
-            }
 
             Vector3 roomSize = world[currentRoomIndex];
 
@@ -73,18 +61,8 @@ public class StageFactory : IStageFactory
                 0);
 
             var itemsInWorld = _diContainer.Resolve<ItemsInWorld>();
-            if (itemsInWorld == null)
-            {
-                Debug.LogError("ItemsInWorld is null.");
-                return;
-            }
 
             var playerCharacter = _player.Character;
-            if (playerCharacter == null)
-            {
-                Debug.LogError("PlayerCharacter is null when creating Rock.");
-                return;
-            }
 
             var rockCharacter = new Rock(100, 0.1f, 1f, null, environmentGameObject.transform.position, playerCharacter, _environments.ToArray(), _staticDataService, itemsInWorld);
             environmentComponent.Initialize(rockCharacter);

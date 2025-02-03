@@ -43,7 +43,7 @@ public class Minion : MonoBehaviour
         while (true)
         {
             if (Character != null)
-                this.transform.DOLocalMove(Character.MoveToTarget(1f), 0.01f);
+                this.transform.DOLocalMove(Character.MoveToPlayer(1f), 0.01f);
             else
                 yield break;
 

@@ -15,6 +15,34 @@ public class PlayerCharacter : Character
     {
         return base.Move(direction);
     }
+
+    public Vector2 GetClosestEnemy()
+    {
+        Character centralEnemy = null;
+        float minDistance = float.MaxValue;
+        float lowestHP = float.MaxValue;
+
+        for (int i = 0; i < EnemyList.Count; i++)
+        {
+            if (this != null && EnemyList[i].HP > 0)
+            {
+                float distance = Vector2.Distance(Position, EnemyList[i].Position) - EnemyList[i].Size;
+
+                if (centralEnemy == null || (distance < minDistance && minDistance > Weapon.Radius))
+                {
+                    minDistance = distance;
+                    centralEnemy = EnemyList[i];
+                }
+                else if (centralEnemy == null || (minDistance <= Weapon.Radius && EnemyList[i].HP < lowestHP))
+                {
+                    centralEnemy = EnemyList[i];
+                    lowestHP = EnemyList[i].HP;
+                }
+            }
+        }
+
+        return centralEnemy.Position;
+    }
 }
 
 
