@@ -39,12 +39,6 @@ public class EnemyFactory : IEnemyFactory
                 Random.Range(-(world[_staticDataService.CurrentRoom].y * 2), world[_staticDataService.CurrentRoom].y * 2),
                 0);
 
-            if (_player.Character == null)
-            {
-                Debug.LogError("PlayerCharacter is null when creating Enemy.");
-                continue;
-            }
-
             var enemyCharacter = new Enemy(100, 0.01f, 1f, weapon, gameObject.transform.position, _player, _minions.ToArray(), i, _diContainer.Resolve<Environment[]>(), _staticDataService, _itemsInWorld);
 
             _minions[i].Character = enemyCharacter;
@@ -52,6 +46,8 @@ public class EnemyFactory : IEnemyFactory
             _minions[i].Character.Inventory = new Inventory();
             _minions[i].Character.Inventory.AddItem(new Item(ItemType.Resources, "Stone"));
             _minions[i].Character.Inventory.AddItem(new Item(weapon));
+
+            _player.Character.EnemyList.Add(enemyCharacter);
 
             // Внедряем зависимости вручную
             _diContainer.Inject(_minions[i].Character);

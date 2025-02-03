@@ -15,7 +15,7 @@ public class GameplayInstaller : MonoInstaller
         BindTestCharacterFactory();
 
 
-        Container.Bind<CameraService>().AsSingle();
+        Container.Bind(typeof(ISetupCamera), typeof(ICameraService)).To<CameraService>().AsSingle();
     }
 
     private void BindInventory()

@@ -8,11 +8,11 @@ public class InputService
     private readonly PlayerInput _playerInput;
     private readonly Player _player;
     private readonly Transform _playerTransform;
-    private readonly CameraService _cameraService;
+    private readonly ICameraService _cameraService;
 
     private Vector2 _moveInput;
 
-    public InputService(PlayerInput playerInput, Player player, Transform playerTransform, CameraService cameraService)
+    public InputService(PlayerInput playerInput, Player player, Transform playerTransform, ICameraService cameraService)
     {
         _playerInput = playerInput;
         _player = player;
@@ -48,7 +48,7 @@ public class InputService
     {
         Debug.Log("LookAt Player");
 
-        _cameraService.LookAt(_playerTransform.position);
+        _cameraService.CancelLookAt();
     }
 
     public void Update()

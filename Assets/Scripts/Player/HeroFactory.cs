@@ -12,9 +12,10 @@ public class HeroFactory : IHeroFactory
     private Player _player;
     private IStaticDataService _staticDataService;
     private ItemsInWorld _itemsInWorld;
-    private CameraService _cameraService;
+    private ICameraService _cameraService;
+    private ISetupCamera _setupCamera;
 
-    public HeroFactory(DiContainer diContainer, List<Minion> minions, List<Environment> environments, IStaticDataService staticDataService, ItemsInWorld itemsInWorld, CameraService cameraService)
+    public HeroFactory(DiContainer diContainer, List<Minion> minions, List<Environment> environments, IStaticDataService staticDataService, ItemsInWorld itemsInWorld, ICameraService cameraService, ISetupCamera setupCamera)
     {
         _diContainer = diContainer;
         _minions = minions;
@@ -22,6 +23,7 @@ public class HeroFactory : IHeroFactory
         _staticDataService = staticDataService;
         _itemsInWorld = itemsInWorld;
         _cameraService = cameraService;
+        _setupCamera = setupCamera;
     }
 
     public Player CreateHero()
@@ -56,12 +58,9 @@ public class HeroFactory : IHeroFactory
             return null;
         }
 
-        var virtualCamera = ProjectContext.Instance.Container.Resolve<CinemachineVirtualCamera>();
-        var playerTransform = _player.transform;
-        var inputService = new InputService(playerInput, _player, playerTransform, _cameraService);
+        _setupCamera.SetupVirtualCamera(_player.transform);
 
-        _player.SetInputService(inputService);
-        SetupVirtualCamera(virtualCamera, playerTransform);
+        _player.SetInputService(new InputService(playerInput, _player, _player.transform, _cameraService));
 
         Debug.Log("Hero created successfully.");
         return _player;
@@ -70,15 +69,6 @@ public class HeroFactory : IHeroFactory
     public Player GetHero()
     {
         return _player ?? CreateHero();
-    }
-
-    private void SetupVirtualCamera(CinemachineVirtualCamera virtualCamera, Transform playerTransform)
-    {
-        if (virtualCamera != null)
-        {
-            virtualCamera.Follow = playerTransform;
-            virtualCamera.LookAt = playerTransform;
-        }
     }
 }
 

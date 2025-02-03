@@ -1,44 +1,71 @@
 using Cinemachine;
 using System.Collections;
 using System.Collections.Generic;
-using TMPro;
 using UnityEngine;
 using Zenject;
 
-public class CameraService
+public class CameraService: ISetupCamera, ICameraService
 {
     private CinemachineVirtualCamera _cinemachineVirtualCamera;
-
     private Transform _playerTransform;
+    private GameObject _newLookPoint = null;
 
-    private GameObject _newLookPoint;
     public CameraService(CinemachineVirtualCamera cinemachineVirtualCamera)
     {
         _cinemachineVirtualCamera = cinemachineVirtualCamera;
     }
 
-    public void LookAt(Vector2 target)
+    public void SetupVirtualCamera(Transform playerTransform)
     {
-        if(_playerTransform == null)
+        if (_cinemachineVirtualCamera != null)
         {
-            _playerTransform = _cinemachineVirtualCamera.LookAt;
+            _cinemachineVirtualCamera.Follow = playerTransform;
+            _cinemachineVirtualCamera.LookAt = playerTransform;
         }
 
-        if(_newLookPoint != null)
+        _playerTransform = playerTransform;
+    }
+
+    public void LookAt(Vector2 target)
+    {
+        if (_newLookPoint != null)
         {
             MonoBehaviour.Destroy(_newLookPoint);
         }
 
-        _newLookPoint = new GameObject("CameraTarget");
-        _newLookPoint.transform.position = new Vector3(target.x, target.y, 0);
+        _newLookPoint = new GameObject("LookAtTarget");
+        _newLookPoint.transform.position = new Vector3(target.x, target.y, _playerTransform.position.z);
 
         _cinemachineVirtualCamera.LookAt = _newLookPoint.transform;
     }
 
-    public void CancleLookAt()
+    public void CancelLookAt()
     {
-        MonoBehaviour.Destroy(_newLookPoint);
+        if (_newLookPoint != null)
+        {
+            MonoBehaviour.Destroy(_newLookPoint);
+        }
 
-        _cinemachineVirtualCamera.LookAt = _playerTransform;
+        ResetCameraRotation();
     }
+
+    private void ResetCameraRotation()
+    {
+        _cinemachineVirtualCamera.LookAt = _playerTransform;
+        _cinemachineVirtualCamera.Follow = _playerTransform;
+
+        _cinemachineVirtualCamera.transform.rotation = Quaternion.identity;
+    }
+}
+
+public interface ISetupCamera
+{
+    public void SetupVirtualCamera(Transform playerTransform);
+}
+
+public interface ICameraService
+{
+    public void LookAt(Vector2 target);
+
+    public void CancelLookAt();
 }
