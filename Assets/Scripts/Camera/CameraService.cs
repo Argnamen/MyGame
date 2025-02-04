@@ -10,20 +10,29 @@ public class CameraService: ISetupCamera, ICameraService
     private Transform _playerTransform;
     private GameObject _newLookPoint = null;
 
+    private List<Transform> _lookAtTransforms = new List<Transform>();
+
     public CameraService(CinemachineVirtualCamera cinemachineVirtualCamera)
     {
         _cinemachineVirtualCamera = cinemachineVirtualCamera;
     }
 
-    public void SetupVirtualCamera(Transform playerTransform)
+    public void SetupVirtualCamera(Transform transform, bool isMain)
     {
-        if (_cinemachineVirtualCamera != null)
+        if (isMain)
         {
-            _cinemachineVirtualCamera.Follow = playerTransform;
-            _cinemachineVirtualCamera.LookAt = playerTransform;
-        }
+            if (_cinemachineVirtualCamera != null)
+            {
+                _cinemachineVirtualCamera.Follow = transform;
+                _cinemachineVirtualCamera.LookAt = transform;
+            }
 
-        _playerTransform = playerTransform;
+            _playerTransform = transform;
+        }
+        else
+        {
+            _lookAtTransforms.Add(transform);
+        }
     }
 
     public void LookAt(Vector2 target)
@@ -53,14 +62,12 @@ public class CameraService: ISetupCamera, ICameraService
     {
         _cinemachineVirtualCamera.LookAt = _playerTransform;
         _cinemachineVirtualCamera.Follow = _playerTransform;
-
-        _cinemachineVirtualCamera.transform.rotation = Quaternion.identity;
     }
 }
 
 public interface ISetupCamera
 {
-    public void SetupVirtualCamera(Transform playerTransform);
+    public void SetupVirtualCamera(Transform playerTransform, bool isMain);
 }
 
 public interface ICameraService

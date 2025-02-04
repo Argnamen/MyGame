@@ -35,12 +35,16 @@ public class HeroFactory : IHeroFactory
 
         var playerPrefab = _diContainer.Resolve<Player>();
 
-        Bow weapon = new Bow(_diContainer, _staticDataService, _itemsInWorld, TypeWeapon.Range, "Bow", 10, 2f, 5f, 90);
+        List<Vector3> world = _staticDataService.GetWorld(_staticDataService.CurrentRoom);
+
+        Bow weapon = new Bow(_diContainer, _staticDataService, _itemsInWorld, TypeWeapon.Range, "Bow", 10, 50f, 5f, 90);
         _player = _diContainer.InstantiatePrefabForComponent<Player>(playerPrefab);
+
+        _player.transform.position = new Vector3(0,-(world[_staticDataService.CurrentRoom].y * 2) + world[_staticDataService.CurrentRoom].y % 2, world[_staticDataService.CurrentRoom].z);
 
         Debug.Log("Player instance created.");
 
-        PlayerCharacter playerCharacter = new PlayerCharacter(100, 0.1f, 1f, weapon, Vector2.zero, _environments.ToArray(), _staticDataService, _itemsInWorld);
+        PlayerCharacter playerCharacter = new PlayerCharacter(100, 0.1f, 1f, weapon, _player.transform.position, _environments.ToArray(), _staticDataService, _itemsInWorld);
         playerCharacter.Inventory = new Inventory();
         playerCharacter.Inventory.AddItem(new Item(weapon));
         _player.Character = playerCharacter;
@@ -52,13 +56,8 @@ public class HeroFactory : IHeroFactory
         _diContainer.Inject(_player);
 
         var playerInput = ProjectContext.Instance.Container.Resolve<PlayerInput>();
-        if (playerInput == null)
-        {
-            Debug.LogError("PlayerInput is null in ProjectContext!");
-            return null;
-        }
 
-        _setupCamera.SetupVirtualCamera(_player.transform);
+        _setupCamera.SetupVirtualCamera(_player.transform, true);
 
         _player.SetInputService(new InputService(playerInput, _player, _player.transform, _cameraService));
 

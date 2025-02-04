@@ -31,6 +31,8 @@ public class StageFactory : IStageFactory
 
         SpawnEnvironment(10);
 
+        SpawnExit();
+
         Debug.Log("Stage created successfully.");
     }
 
@@ -58,7 +60,7 @@ public class StageFactory : IStageFactory
             environmentGameObject.transform.position = new Vector3(
                 Random.Range(-(roomSize.x * 2), roomSize.x * 2),
                 Random.Range(-(roomSize.y * 2), roomSize.y * 2),
-                0);
+                roomSize.z);
 
             var itemsInWorld = _diContainer.Resolve<ItemsInWorld>();
 
@@ -70,8 +72,20 @@ public class StageFactory : IStageFactory
             rockCharacter.Inventory = new Inventory();
             rockCharacter.Inventory.AddItem(new Item(ItemType.Resources, "Stone"));
 
-            _player.Character.EnemyList.Add(environmentComponent.Character);
+            //_player.Character.EnemyList.Add(environmentComponent.Character);
         }
+    }
+
+    private void SpawnExit()
+    {
+        GameObject environmentGameObject = GameObject.Instantiate((GameObject)Resources.Load("Prefab/Exit"));
+        List<Vector3> world = _staticDataService.GetWorld(_staticDataService.CurrentRoom);
+
+        int currentRoomIndex = _staticDataService.CurrentRoom;
+
+        Vector3 roomSize = world[currentRoomIndex];
+
+        environmentGameObject.transform.position = new Vector3(0, roomSize.y * 2, roomSize.z);
     }
 }
 
