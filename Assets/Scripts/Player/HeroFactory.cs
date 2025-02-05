@@ -57,9 +57,13 @@ public class HeroFactory : IHeroFactory
 
         var playerInput = ProjectContext.Instance.Container.Resolve<PlayerInput>();
 
+        var inputService = new InputService(playerInput, _player, _player.transform, _cameraService);
+
         _setupCamera.SetupVirtualCamera(_player.transform, true);
 
-        _player.SetInputService(new InputService(playerInput, _player, _player.transform, _cameraService));
+        _player.SetInputService(inputService);
+
+        _diContainer.Inject(inputService);
 
         Debug.Log("Hero created successfully.");
         return _player;

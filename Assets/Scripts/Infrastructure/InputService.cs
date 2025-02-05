@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using Cinemachine;
 using DG.Tweening;
+using Zenject;
 
 public class InputService
 {
@@ -11,6 +12,14 @@ public class InputService
     private readonly ICameraService _cameraService;
 
     private Vector2 _moveInput;
+
+    private IGameMode _gameMode;
+
+    [Inject]
+    public void Construct(IGameMode gameMode)
+    {
+        _gameMode = gameMode;
+    }
 
     public InputService(PlayerInput playerInput, Player player, Transform playerTransform, ICameraService cameraService)
     {
@@ -24,6 +33,11 @@ public class InputService
 
         _playerInput.actions["LookAt"].performed += OnLookAtPerformed;
         _playerInput.actions["LookAt"].canceled += OnLookAtCanceled;
+
+        _playerInput.actions["Steals"].performed += OnStealsMod;
+        _playerInput.actions["Steals"].canceled += OnFightMod;
+
+        _playerInput.actions["Fight"].performed += OnAutoAttack;
     }
 
 
@@ -39,16 +53,28 @@ public class InputService
 
     private void OnLookAtPerformed(InputAction.CallbackContext context)
     {
-        Debug.Log("LookAt Enemy");
-
         _cameraService.LookAt(_player.Character.GetClosestEnemy());
     }
 
     private void OnLookAtCanceled(InputAction.CallbackContext context)
     {
-        Debug.Log("LookAt Player");
-
         _cameraService.CancelLookAt();
+    }
+
+    private void OnStealsMod(InputAction.CallbackContext context)
+    {
+        _gameMode.StealsModOn();
+    }
+
+    private void OnFightMod(InputAction.CallbackContext context)
+    {
+        _gameMode.FightModOn();
+    }
+
+    
+    private void OnAutoAttack(InputAction.CallbackContext context)
+    {
+        _gameMode.AutoBattleModOn();
     }
 
     public void Update()

@@ -3,13 +3,22 @@ using UnityEngine;
 public class Enemy : Character
 {
     private Direction _lastDirection;
+
+    public float VisibilityRange;
     public Player PlayerCharacter;
+
     private Minion[] _minions;
     private int _numberMinion = 0;
     private float _jump;
+
+    private int StepNumber = 100;
+
+    private Vector2 _movePatrolVector;
+
+    private bool _playerFound = false;
     public Character Target { get; private set; }
 
-    public Enemy(int healt, float spead, float size, Weapon weapon, Vector2 startPos, Player player, Minion[] minion, int numberMinion, Environment[] environments, IStaticDataService staticDataService, ItemsInWorld itemsInWorld)
+    public Enemy(int healt, float spead, float visiabilityRange, float size, Weapon weapon, Vector2 startPos, Player player, Minion[] minion, int numberMinion, Environment[] environments, IStaticDataService staticDataService, ItemsInWorld itemsInWorld)
         : base(healt, spead, size, weapon, startPos, environments, staticDataService, itemsInWorld)
     {
         _jump = 1;
@@ -17,6 +26,10 @@ public class Enemy : Character
         _minions = minion;
         _numberMinion = numberMinion;
         Target = player.Character;
+
+        VisibilityRange = visiabilityRange;
+
+        DamageEvent.AddListener(PlayerFound);
     }
 
     public override Vector2 Move(Direction direction)
@@ -28,14 +41,25 @@ public class Enemy : Character
     public Vector2 MoveToPlayer(float distante)
     {
         Vector2 newPos = _startPos;
-        int c = 0;
 
         if (PlayerCharacter == null || Vector2.Distance(newPos, PlayerCharacter.transform.position) <= distante)
         {
             return _startPos;
         }
 
-        newPos = Vector2.MoveTowards(_startPos, PlayerCharacter.transform.position, 0.1f);
+        newPos = Vector2.MoveTowards(_startPos, PlayerCharacter.transform.position, _spead);
+
+        if (Vector2.Distance(newPos, PlayerCharacter.transform.position) > VisibilityRange && !_playerFound)
+        {
+            newPos = PatrolMove(_startPos);
+            _startPos = newPos;
+
+            return _startPos;
+        }
+
+        PlayerFound();
+
+        _gameMode.BlockStealMode(_playerFound);
 
         for (int i = 0; i < _minions.Length; i++)
         {
@@ -43,19 +67,55 @@ public class Enemy : Character
             {
                 if (Vector2.Distance(_startPos, _minions[i].transform.position) <= 1 && Vector2.Distance(_startPos, PlayerCharacter.transform.position) > Vector2.Distance(_minions[i].transform.position, PlayerCharacter.transform.position))
                 {
-                    c++;
-                    newPos = Vector2.MoveTowards(_startPos, AlternativeMove(_startPos, _minions[i].transform.position), 0.1f);
+                    newPos = Vector2.MoveTowards(_startPos, AlternativeMove(_startPos, _minions[i].transform.position), _spead);
                 }
 
                 if (Vector2.Distance(_startPos, _minions[i].transform.position) <= 0.9f || Vector2.Distance(newPos, _minions[i].transform.position) <= 0.9f)
                 {
-                    newPos = Vector2.MoveTowards(_startPos, FindOppositePoint(_startPos, PlayerCharacter.transform.position), 0.1f);
+                    newPos = Vector2.MoveTowards(_startPos, FindOppositePoint(_startPos, PlayerCharacter.transform.position), _spead);
                     break;
                 }
             }
         }
 
         _startPos = newPos;
+        return newPos;
+    }
+
+    private void PlayerFound()
+    {
+        _playerFound = true;
+    }
+
+    public override void BlockSteals()
+    {
+        _playerFound = true;
+    }
+
+    private Vector2 PatrolMove(Vector2 startPos)
+    {
+        Vector2 newPos = startPos;
+
+        float mapX = _staticDataService.GetWorld(0)[_staticDataService.CurrentRoom].x * 2;
+        float mapY = _staticDataService.GetWorld(0)[_staticDataService.CurrentRoom].y * 2;
+
+        if (StepNumber == 0 || StepNumber == 100)
+        {
+            StepNumber = 100;
+
+            _movePatrolVector = new Vector2(Random.Range(-mapX, mapX), Random.Range(-mapY, mapY));
+        }
+
+        newPos = Vector2.MoveTowards(startPos, startPos + _movePatrolVector, _spead);
+
+        if (Mathf.Abs(newPos.x) >= mapX || Mathf.Abs(newPos.y) >= mapY)
+        {
+            StepNumber = 0;
+            return PatrolMove(startPos);
+        }
+
+        StepNumber--;
+
         return newPos;
     }
 

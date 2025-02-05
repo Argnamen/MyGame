@@ -16,6 +16,7 @@ public class GameplayInstaller : MonoInstaller
 
 
         Container.Bind(typeof(ISetupCamera), typeof(ICameraService)).To<CameraService>().AsSingle();
+        Container.Bind<IGameMode>().To<GameModeController>().AsSingle();
     }
 
     private void BindInventory()

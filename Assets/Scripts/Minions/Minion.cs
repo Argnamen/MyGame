@@ -1,12 +1,25 @@
 using DG.Tweening;
 using System.Collections;
 using UnityEngine;
+using Zenject;
 
 public class Minion : MonoBehaviour
 {
+    [SerializeField] private Transform _visiabilityObject;
     public Enemy Character;
 
     private Color32 DamageColor = new Color32(181, 0, 0, 255);
+
+    private IGameMode _gameMode;
+
+    [Inject]
+    public void Construct(IGameMode gameMode)
+    {
+        _gameMode = gameMode;
+
+        _gameMode.FigthMod += OnFightMode;
+        _gameMode.StealsMod += OnStealsMode;
+    }
 
     private void Start()
     {
@@ -14,6 +27,10 @@ public class Minion : MonoBehaviour
 
         StartCoroutine(AutoMove());
         StartCoroutine(Character.Damage(new Character[1] { Character.Target }, true));
+
+        _visiabilityObject.localScale = Vector3.one * (Character.VisibilityRange * 2f);
+
+        OnFightMode();
     }
 
     private void Update()
@@ -43,11 +60,21 @@ public class Minion : MonoBehaviour
         while (true)
         {
             if (Character != null)
-                this.transform.DOLocalMove(Character.MoveToPlayer(1f), 0.01f);
+                this.transform.DOLocalMove(Character.MoveToPlayer(1f), 1f - Character.Spead).SetEase(Ease.Flash);
             else
                 yield break;
 
-            yield return new WaitForSeconds(0.01f);
+            yield return new WaitForSeconds(1f - Character.Spead);
         }
+    }
+
+    private void OnStealsMode()
+    {
+        _visiabilityObject.gameObject.SetActive(true);
+    }
+
+    private void OnFightMode()
+    {
+        _visiabilityObject.gameObject.SetActive(false);
     }
 }

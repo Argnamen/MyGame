@@ -6,12 +6,15 @@ using Zenject;
 
 public abstract class Character
 {
-    private IStaticDataService _staticDataService;
+    protected IStaticDataService _staticDataService;
     private ItemsInWorld _itemsInWorld;
+    protected IGameMode _gameMode;
 
     protected int _healt;
     protected float _spead;
     protected float _size;
+
+    protected float _defautSpead;
 
     public Weapon Weapon;
 
@@ -24,17 +27,28 @@ public abstract class Character
     public Vector2 Position => _startPos;
     public Environment[] Environments => _environments;
 
+    public float Spead => _spead;
+
     public UnityEvent DamageEvent = new UnityEvent();
     public UnityEvent DeathEvent = new UnityEvent();
     public Inventory Inventory;
 
-    private bool _isDamageUpTime = false;
+    protected bool _isDamageUpTime = false;
+
+    protected bool _isStealsModOn = false;
+
+    public bool IsAttack = true;
 
     [Inject]
-    public void Construct(IStaticDataService staticDataService, ItemsInWorld itemsInWorld)
+    public void Construct(IStaticDataService staticDataService, ItemsInWorld itemsInWorld, IGameMode gameMode)
     {
         _staticDataService = staticDataService;
         _itemsInWorld = itemsInWorld;
+        _gameMode = gameMode;
+
+        _gameMode.StealsMod += OnStealsMod;
+        _gameMode.FigthMod += OnFigthMod;
+        _gameMode.BlockStealsMod += BlockSteals;
     }
 
     public Character(int healt, float spead, float size, Weapon weapon, Vector2 startPos, Environment[] environments)
@@ -43,6 +57,8 @@ public abstract class Character
         _spead = spead;
         _startPos = startPos;
         _environments = environments;
+
+        _defautSpead = spead;
 
         _size = size;
         Weapon = weapon;
@@ -59,10 +75,31 @@ public abstract class Character
         _staticDataService = staticDataService;
         _itemsInWorld = itemsInWorld;
 
+        _defautSpead = spead;
+
         _size = size;
         Weapon = weapon;
 
         Inventory = new Inventory();
+    }
+
+    public virtual void OnStealsMod()
+    {
+        _isStealsModOn = true;
+
+        _spead = _defautSpead / 2;
+    }
+
+    public virtual void OnFigthMod() 
+    {
+        _isStealsModOn = false;
+
+        _spead = _defautSpead;
+    }
+
+    public virtual void BlockSteals()
+    {
+
     }
 
     public virtual Vector2 Move(Direction direction)
@@ -159,6 +196,18 @@ public abstract class Character
 
         while (isAuto)
         {
+            if(!IsAttack)
+            {
+                yield return new WaitForFixedUpdate();
+                continue;
+            }
+
+            if (_isStealsModOn)
+            {
+                yield return new WaitForFixedUpdate();
+                continue;
+            }
+
             int c = 0;
             Character centralEnemy = null;
             float minDistance = float.MaxValue;

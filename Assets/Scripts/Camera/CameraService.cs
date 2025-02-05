@@ -7,14 +7,22 @@ using Zenject;
 public class CameraService: ISetupCamera, ICameraService
 {
     private CinemachineVirtualCamera _cinemachineVirtualCamera;
+    private IGameMode _gameMode;
+
+    private CinemachineVirtualCamera _stealsCamera;
+
     private Transform _playerTransform;
     private GameObject _newLookPoint = null;
 
     private List<Transform> _lookAtTransforms = new List<Transform>();
 
-    public CameraService(CinemachineVirtualCamera cinemachineVirtualCamera)
+    public CameraService(CinemachineVirtualCamera cinemachineVirtualCamera, IGameMode gameMode)
     {
         _cinemachineVirtualCamera = cinemachineVirtualCamera;
+        _gameMode = gameMode;
+
+        _gameMode.StealsMod += StealsCameraOn;
+        _gameMode.FigthMod += FightCameraOn;
     }
 
     public void SetupVirtualCamera(Transform transform, bool isMain)
@@ -28,11 +36,28 @@ public class CameraService: ISetupCamera, ICameraService
             }
 
             _playerTransform = transform;
+
+            SetupStealCamera();
         }
         else
         {
             _lookAtTransforms.Add(transform);
         }
+    }
+
+    private void SetupStealCamera()
+    {
+        GameObject cameraObject = new GameObject("StealsCamera");
+
+        var virtualCamera = cameraObject.AddComponent<CinemachineVirtualCamera>();
+
+        virtualCamera.enabled = false;
+
+        virtualCamera.LookAt = _cinemachineVirtualCamera.LookAt;
+
+        cameraObject.transform.position = new Vector3(0, 0, -100);
+
+        _stealsCamera = virtualCamera;
     }
 
     public void LookAt(Vector2 target)
@@ -62,6 +87,18 @@ public class CameraService: ISetupCamera, ICameraService
     {
         _cinemachineVirtualCamera.LookAt = _playerTransform;
         _cinemachineVirtualCamera.Follow = _playerTransform;
+    }
+
+    private void StealsCameraOn()
+    {
+        _cinemachineVirtualCamera.enabled = false;
+        _stealsCamera.enabled = true;
+    }
+
+    private void FightCameraOn()
+    {
+        _stealsCamera.enabled = false;
+        _cinemachineVirtualCamera.enabled = true;
     }
 }
 
