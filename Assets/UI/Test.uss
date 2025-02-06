@@ -1,0 +1,6 @@
+.panel {
+    width: auto;
+    color: rgb(0, 33, 255);
+    -unity-text-align: upper-center;
+    font-size: 103px;
+}

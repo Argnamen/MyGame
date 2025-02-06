@@ -1,14 +1,17 @@
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class GameOverState : IState, IExitableState
 {
     private readonly GameStateMachine _stateMachine;
     private readonly IUIFactory _uiFactory;
+    private UIDocument _uiDocument;
 
-    public GameOverState(GameStateMachine stateMachine, IUIFactory uiFactory)
+    public GameOverState(GameStateMachine stateMachine, IUIFactory uiFactory, UIDocument uIDocument)
     {
         _stateMachine = stateMachine;
         _uiFactory = uiFactory;
+        _uiDocument = uIDocument;
     }
 
     public void Enter()

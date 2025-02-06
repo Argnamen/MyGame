@@ -3,6 +3,7 @@ using UnityEngine.InputSystem;
 using UnityEngine;
 using Zenject;
 using Cinemachine;
+using UnityEngine.UIElements;
 
 namespace Assets.Scripts.Infrastructure
 {
@@ -12,6 +13,7 @@ namespace Assets.Scripts.Infrastructure
         [SerializeField] private Camera _mainCamera;
         [SerializeField] private CinemachineVirtualCamera _cinemachineVirtualCamera;
         [SerializeField] private Player _playerPrefab;
+        [SerializeField] private BattleUIHierechy _ui;
 
         public override void InstallBindings()
         {
@@ -39,6 +41,7 @@ namespace Assets.Scripts.Infrastructure
             Container.Bind<Camera>().FromInstance(_mainCamera).AsSingle();
             Container.Bind<CinemachineVirtualCamera>().FromInstance(_cinemachineVirtualCamera).AsSingle();
             Container.Bind<Player>().FromInstance(_playerPrefab).AsSingle();
+            Container.Bind<BattleUIHierechy>().FromInstance(_ui).AsSingle();
 
         }
     }
