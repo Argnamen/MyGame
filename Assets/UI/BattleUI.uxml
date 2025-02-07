@@ -1,7 +1,0 @@
-<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
-    <Style src="project://database/Assets/UI/Test.uss?fileID=7433441132597879392&amp;guid=4773f6d2917d8204698e9faa13c23403&amp;type=3#Test" />
-    <ui:VisualElement class="panel" style="flex-grow: 1;">
-        <ui:Button text="Button" parse-escape-sequences="true" display-tooltip-when-elided="true" name="okButton" />
-        <ui:Label tabindex="-1" text="Battle" parse-escape-sequences="true" display-tooltip-when-elided="true" style="height: 118px;" />
-    </ui:VisualElement>
-</ui:UXML>

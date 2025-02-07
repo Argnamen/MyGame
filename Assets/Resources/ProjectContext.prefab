@@ -216,8 +216,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3471142788042636748}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.5257311, y: -0, z: -0, w: 0.85065085}
-  m_LocalPosition: {x: 0, y: -50, z: -7.45}
+  m_LocalRotation: {x: -0.54533404, y: 0.00000003967454, z: 0.000000014222807, w: 0.83821887}
+  m_LocalPosition: {x: 0, y: -13.16, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -438,7 +438,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Actions: {fileID: -944628639613478452, guid: 57a03ca6514703241a187f3346b1cd55, type: 3}
   m_NotificationBehavior: 0
-  m_UIInputModule: {fileID: 7485022134506377411, guid: df7ba5c2d1698d940846b1894cb2a2ef, type: 3}
+  m_UIInputModule: {fileID: 0}
   m_DeviceLostEvent:
     m_PersistentCalls:
       m_Calls: []
@@ -450,8 +450,8 @@ MonoBehaviour:
       m_Calls: []
   m_ActionEvents: []
   m_NeverAutoSwitchControlSchemes: 0
-  m_DefaultControlScheme: Keyboard&Mouse
-  m_DefaultActionMap: 1b6931e1-38fd-4177-a460-49f9d95939d9
+  m_DefaultControlScheme: 
+  m_DefaultActionMap: Move
   m_SplitScreenIndex: -1
   m_Camera: {fileID: 8962543356086725026}
 --- !u!1 &4340206551544071296
@@ -615,4 +615,3 @@ MonoBehaviour:
   _mainCamera: {fileID: 8962543356086725026}
   _cinemachineVirtualCamera: {fileID: 3971513081909445143}
   _playerPrefab: {fileID: -7077160291603625119, guid: c2d601092cf83054489c3edd6f9bf0c3, type: 3}
-  _ui: {fileID: 8761068991542965174, guid: df7ba5c2d1698d940846b1894cb2a2ef, type: 3}

@@ -24,7 +24,6 @@ public class HeroFactory : IHeroFactory
         _itemsInWorld = itemsInWorld;
         _cameraService = cameraService;
         _setupCamera = setupCamera;
-        
     }
 
     public Player CreateHero()
