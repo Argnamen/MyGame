@@ -8,6 +8,7 @@ public class GameplayInstaller : MonoInstaller
     [SerializeField] private Camera _mainCamera;
     [SerializeField] private GameObject _playerInputPrefab;
     [SerializeField] private CinemachineVirtualCamera _playerVirtualCamera;
+    [SerializeField] private BattleUiView _battleUiView;
 
     public override void InstallBindings()
     {
@@ -17,6 +18,11 @@ public class GameplayInstaller : MonoInstaller
 
         Container.Bind(typeof(ISetupCamera), typeof(ICameraService)).To<CameraService>().AsSingle();
         Container.Bind<IGameMode>().To<GameModeController>().AsSingle();
+
+
+        Container.Bind<BattleUiView>().FromComponentInNewPrefab(_battleUiView).AsTransient();
+        Container.Bind<BattleUIModel>().AsTransient();
+        Container.BindFactory<BattleUIModel, BattleUIModelFactory>().AsSingle();
     }
 
     private void BindInventory()
