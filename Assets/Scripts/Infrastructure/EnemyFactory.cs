@@ -41,7 +41,7 @@ public class EnemyFactory : IEnemyFactory
                 Random.Range(-(world[_staticDataService.CurrentRoom].y * 1.2f), world[_staticDataService.CurrentRoom].y * 2),
                 0);
 
-            var enemyCharacter = new Enemy(100, 0.9f, 10f, 1f, weapon, gameObject.transform.position, _player, _minions.ToArray(), i, _diContainer.Resolve<Environment[]>(), _staticDataService, _itemsInWorld);
+            var enemyCharacter = new Enemy(100, 1f, 10f, 1f, weapon, gameObject.transform.position, _player, _minions.ToArray(), i, _diContainer.Resolve<Environment[]>(), _staticDataService, _itemsInWorld);
 
             _minions[i].Character = enemyCharacter;
 

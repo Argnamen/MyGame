@@ -44,7 +44,7 @@ public class HeroFactory : IHeroFactory
 
         Debug.Log("Player instance created.");
 
-        PlayerCharacter playerCharacter = new PlayerCharacter(100, 0.1f, 1f, weapon, _player.transform.position, _environments.ToArray(), _staticDataService, _itemsInWorld);
+        PlayerCharacter playerCharacter = new PlayerCharacter(100, 1f, 1f, weapon, _player.transform.position, _environments.ToArray(), _staticDataService, _itemsInWorld);
         playerCharacter.Inventory = new Inventory();
         playerCharacter.Inventory.AddItem(new Item(weapon));
         _player.Character = playerCharacter;

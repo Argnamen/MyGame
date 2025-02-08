@@ -8,6 +8,7 @@ public class CameraService: ISetupCamera, ICameraService
 {
     private CinemachineVirtualCamera _cinemachineVirtualCamera;
     private IGameMode _gameMode;
+    private IStaticDataService _staticDataService;
 
     private CinemachineVirtualCamera _stealsCamera;
 
@@ -16,10 +17,11 @@ public class CameraService: ISetupCamera, ICameraService
 
     private List<Transform> _lookAtTransforms = new List<Transform>();
 
-    public CameraService(CinemachineVirtualCamera cinemachineVirtualCamera, IGameMode gameMode)
+    public CameraService(CinemachineVirtualCamera cinemachineVirtualCamera, IGameMode gameMode, IStaticDataService staticDataService)
     {
         _cinemachineVirtualCamera = cinemachineVirtualCamera;
         _gameMode = gameMode;
+        _staticDataService = staticDataService;
 
         _gameMode.StealsMod += StealsCameraOn;
         _gameMode.FigthMod += FightCameraOn;
@@ -55,7 +57,7 @@ public class CameraService: ISetupCamera, ICameraService
 
         virtualCamera.LookAt = _cinemachineVirtualCamera.LookAt;
 
-        cameraObject.transform.position = new Vector3(0, 0, -100);
+        cameraObject.transform.position = new Vector3(0, 0, -_staticDataService.GetWorld(_staticDataService.CurrentRoom)[0].y * 5);
 
         _stealsCamera = virtualCamera;
     }

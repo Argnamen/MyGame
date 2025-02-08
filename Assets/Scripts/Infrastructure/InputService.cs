@@ -79,10 +79,7 @@ public class InputService
 
     public void Update()
     {
-        if (_moveInput != Vector2.zero)
-        {
-            HandleMovement(_moveInput);
-        }
+        HandleMovement(_moveInput);
     }
 
     private void HandleMovement(Vector2 moveInput)
@@ -106,8 +103,12 @@ public class InputService
         {
             newPos = _player.Character.Move(Character.Direction.Left);
         }
+        else
+        {
+            newPos = _player.Character.Move(Character.Direction.None);
+        }
 
-        _playerTransform.DOMove(newPos, 0.2f);
+        _playerTransform.DOMove(newPos, 0.1f).SetEase(Ease.Flash);
     }
 }
 

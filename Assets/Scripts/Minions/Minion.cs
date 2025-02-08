@@ -60,11 +60,11 @@ public class Minion : MonoBehaviour
         while (true)
         {
             if (Character != null)
-                this.transform.DOLocalMove(Character.MoveToPlayer(1f), 1f - Character.Spead).SetEase(Ease.Flash);
+                this.transform.DOLocalMove(Character.MoveToPlayer(1f), 0.1f).SetEase(Ease.Flash);
             else
                 yield break;
 
-            yield return new WaitForSeconds(1f - Character.Spead);
+            yield return new WaitForSeconds(0.1f);
         }
     }
 

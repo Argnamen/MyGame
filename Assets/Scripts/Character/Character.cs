@@ -168,19 +168,19 @@ public abstract class Character
         switch (direction)
         {
             case Direction.Up:
-                newPos += Vector2.up * _spead;
+                newPos = Vector2.MoveTowards(_startPos, newPos + Vector2.up * _spead, _spead);
                 break;
             case Direction.Down:
-                newPos += Vector2.down * _spead;
+                newPos = Vector2.MoveTowards(_startPos, newPos + Vector2.down * _spead, _spead);
                 break;
             case Direction.Left:
-                newPos += Vector2.left * _spead;
+                newPos = Vector2.MoveTowards(_startPos, newPos + Vector2.left * _spead, _spead);
                 break;
             case Direction.Right:
-                newPos += Vector2.right * _spead;
+                newPos = Vector2.MoveTowards(_startPos, newPos + Vector2.right * _spead, _spead);
                 break;
             default:
-                newPos += Vector2.zero * _spead;
+                newPos = Vector2.MoveTowards(_startPos, newPos + Vector2.zero * _spead, _spead);
                 break;
         }
 
