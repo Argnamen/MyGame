@@ -106,13 +106,19 @@ public class Enemy : Character
             _movePatrolVector = new Vector2(Random.Range(-mapX, mapX), Random.Range(-mapY, mapY));
         }
 
-        newPos = Vector2.MoveTowards(startPos, startPos + _movePatrolVector, _spead);
-
         if (Mathf.Abs(newPos.x) >= mapX || Mathf.Abs(newPos.y) >= mapY)
         {
-            StepNumber = 0;
-            return PatrolMove(startPos);
+            if(Mathf.Abs(newPos.x) >= mapX)
+            {
+                startPos *= new Vector2(-1, 1);
+            }
+            else
+            {
+                startPos *= new Vector2(1, -1);
+            }
         }
+
+        newPos = Vector2.MoveTowards(startPos, startPos + _movePatrolVector, _spead);
 
         StepNumber--;
 

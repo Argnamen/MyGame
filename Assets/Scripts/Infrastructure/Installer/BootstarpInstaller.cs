@@ -19,7 +19,6 @@ namespace Assets.Scripts.Infrastructure
             Container.Bind<DungeonList>().AsSingle();
             Container.Bind<MinionList>().AsSingle();
             Container.Bind<PlayerModels>().AsSingle();
-            Container.Bind<WorldsMap>().AsSingle();
             Container.Bind<Weapon>().AsSingle();
             Container.Bind<ItemsInWorld>().AsSingle();
             Container.Bind<SceneLoader>().AsSingle();

@@ -8,13 +8,6 @@ public class Projectile : Character
     public Character Target;
     public Vector2 Vector;
     private bool isFirstStart = true;
-    private WorldsMap _worldsMap;
-
-    [Inject]
-    public void Construct(WorldsMap worldsMap)
-    {
-        _worldsMap = worldsMap;
-    }
 
     public Projectile(int healt, float spead, float size, Weapon weapon, Vector2 startPos, Environment[] environments, IStaticDataService staticDataService, ItemsInWorld itemsInWorld)
         : base(healt, spead, size, weapon, startPos, environments, staticDataService, itemsInWorld)
@@ -32,22 +25,19 @@ public class Projectile : Character
             Vector = (Target.Position - _startPos).normalized * _spead;
         }
 
-        int world = _worldsMap.CorrectWorld;
+        int world = _staticDataService.CurrentRoom;
 
         // Проверка столкновения с границами мира
-        if (_worldsMap.GetWorld(world)[0].x * 2 < Mathf.Abs(newPos.x) || _worldsMap.GetWorld(world)[0].y * 2 < Mathf.Abs(newPos.y))
+        if (_staticDataService.GetWorld(world)[0].x * 2 < Mathf.Abs(newPos.x) || _staticDataService.GetWorld(world)[0].y * 2 < Mathf.Abs(newPos.y))
         {
-            // Пересчёт вектора движения
-            if (_worldsMap.GetWorld(world)[0].x * 2 < Mathf.Abs(newPos.x))
+            if (_staticDataService.GetWorld(world)[0].x * 2 < Mathf.Abs(newPos.x))
             {
-                Vector = Vector2.Reflect(Vector, Vector2.right); // Отражение по оси X
+                _startPos *= new Vector2(-1, 1);
             }
-            else if (_worldsMap.GetWorld(world)[0].y * 2 < Mathf.Abs(newPos.y))
+            else
             {
-                Vector = Vector2.Reflect(Vector, Vector2.up); // Отражение по оси Y
+                _startPos *= new Vector2(1, -1);
             }
-
-            UpdateHP(-10);
         }
 
         foreach (var env in Environments)

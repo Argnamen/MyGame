@@ -14,10 +14,7 @@ public class StaticDataService : IStaticDataService
     private void LoadWorlds()
     {
         _worlds.Add(new List<Vector3> { 
-            new Vector3(20, 20, 0),
-            new Vector3(10, 10, 10),
-            new Vector3(15, 15, 20),
-            new Vector3(25, 25, 30) 
+            new Vector3(20, 20, 0)
         });
 
         CurrentRoom = 0;

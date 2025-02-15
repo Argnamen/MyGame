@@ -1,6 +1,7 @@
 using Cinemachine;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
 using Zenject;
 
@@ -85,6 +86,19 @@ public class CameraService: ISetupCamera, ICameraService
         ResetCameraRotation();
     }
 
+    public void ForceCamera()
+    {
+        Transform look = _cinemachineVirtualCamera.LookAt;
+        Transform follow = _cinemachineVirtualCamera.Follow;
+
+        _cinemachineVirtualCamera.enabled = false;
+
+        _cinemachineVirtualCamera.transform.position = follow.position;
+        _cinemachineVirtualCamera.transform.rotation = _cinemachineVirtualCamera.transform.rotation;
+
+        _cinemachineVirtualCamera.enabled = true;
+    }
+
     private void ResetCameraRotation()
     {
         _cinemachineVirtualCamera.LookAt = _playerTransform;
@@ -114,4 +128,6 @@ public interface ICameraService
     public void LookAt(Vector2 target);
 
     public void CancelLookAt();
+
+    public void ForceCamera();
 }

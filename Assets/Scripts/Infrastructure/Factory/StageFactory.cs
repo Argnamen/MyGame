@@ -26,21 +26,55 @@ public class StageFactory : IStageFactory
 
         for (int i = 0; i < world.Count; i++)
         {
-            SpawnWorld(world[i], i);
+            SpawnWorld(world[i], world[0]);
         }
 
         SpawnEnvironment(10);
 
-        SpawnExit();
+        //SpawnExit();
 
         Debug.Log("Stage created successfully.");
     }
 
-    private void SpawnWorld(Vector3 size, int num)
+    private void SpawnWorld(Vector3 pos, Vector3 size)
     {
-        GameObject plane = GameObject.Instantiate((GameObject)Resources.Load("Prefab/Plane"));
-        plane.transform.position = Vector3.forward * size.z;
-        plane.GetComponent<SpriteRenderer>().size = (Vector2)size;
+        for (int i = 0; i < 9; i++)
+        {
+            GameObject plane = GameObject.Instantiate((GameObject)Resources.Load("Prefab/Plane"));
+
+            switch (i)
+            {
+                case 0:
+                    plane.transform.position = Vector3.zero;
+                    break;
+                case 1:
+                    plane.transform.position = new Vector3(0, pos.y * 4, 0);
+                    break;
+                case 2:
+                    plane.transform.position = new Vector3(pos.x * 4, pos.y * 4, 0);
+                    break;
+                case 3:
+                    plane.transform.position = new Vector3(pos.x * 4, 0, 0);
+                    break;
+                case 4:
+                    plane.transform.position = new Vector3(pos.x * 4, -pos.y * 4, 0);
+                    break;
+                case 5:
+                    plane.transform.position = new Vector3(0, -pos.y * 4, 0);
+                    break;
+                case 6:
+                    plane.transform.position = new Vector3(-pos.x * 4, -pos.y * 4, 0);
+                    break;
+                case 7:
+                    plane.transform.position = new Vector3(-pos.x * 4, 0, 0);
+                    break;
+                case 8:
+                    plane.transform.position = new Vector3(-pos.x * 4, pos.y * 4, 0);
+                    break;
+            }
+
+            plane.GetComponent<SpriteRenderer>().size = (Vector2)size;
+        }
     }
 
     private void SpawnEnvironment(int count)
@@ -72,7 +106,50 @@ public class StageFactory : IStageFactory
             rockCharacter.Inventory = new Inventory();
             rockCharacter.Inventory.AddItem(new Item(ItemType.Resources, "Stone"));
 
+            SpawnClone(environmentGameObject);
+
             //_player.Character.EnemyList.Add(environmentComponent.Character);
+        }
+    }
+
+    //test idea
+    private void SpawnClone(GameObject origObject)
+    {
+        Vector3 world = _staticDataService.GetWorld(_staticDataService.CurrentRoom)[0];
+
+        for (int g = 0; g < 8; g++)
+        {
+            GameObject obj = GameObject.Instantiate(origObject,origObject.transform);
+
+            MonoBehaviour.Destroy(obj.GetComponent<Environment>());
+
+            switch (g)
+            {
+                case 0:
+                    obj.transform.position = new Vector3(origObject.transform.position.x, origObject.transform.position.y + world.y * 2, origObject.transform.position.z);
+                    break;
+                case 1:
+                    obj.transform.position = new Vector3(origObject.transform.position.x + world.x * 2, origObject.transform.position.y + world.y * 2, origObject.transform.position.z);
+                    break;
+                case 2:
+                    obj.transform.position = new Vector3(origObject.transform.position.x + world.x * 2, origObject.transform.position.y, origObject.transform.position.z);
+                    break;
+                case 3:
+                    obj.transform.position = new Vector3(origObject.transform.position.x + world.x * 2, origObject.transform.position.y - world.y * 2, origObject.transform.position.z);
+                    break;
+                case 4:
+                    obj.transform.position = new Vector3(origObject.transform.position.x, origObject.transform.position.y - world.y * 2, origObject.transform.position.z);
+                    break;
+                case 5:
+                    obj.transform.position = new Vector3(origObject.transform.position.x - world.x * 2, origObject.transform.position.y - world.y * 2, origObject.transform.position.z);
+                    break;
+                case 6:
+                    obj.transform.position = new Vector3(origObject.transform.position.x - world.x * 2, origObject.transform.position.y, origObject.transform.position.z);
+                    break;
+                case 7:
+                    obj.transform.position = new Vector3(origObject.transform.position.x - world.x * 2, origObject.transform.position.y + world.y * 2, origObject.transform.position.z);
+                    break;
+            }
         }
     }
 

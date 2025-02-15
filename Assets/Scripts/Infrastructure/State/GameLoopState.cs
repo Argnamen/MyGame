@@ -27,7 +27,7 @@ public class GameLoopState : IState, IExitableState
     {
         _player.OnPlayerDied += OnPlayerDied;
 
-        _enemyFactory.CreateEnemies(10);
+        //_enemyFactory.CreateEnemies(10);
 
         Debug.Log("Game loop started.");
     }

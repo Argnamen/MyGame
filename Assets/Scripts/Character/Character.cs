@@ -9,6 +9,7 @@ public abstract class Character
     protected IStaticDataService _staticDataService;
     private ItemsInWorld _itemsInWorld;
     protected IGameMode _gameMode;
+    private ICameraService _cameraService;
 
     protected int _healt;
     protected float _spead;
@@ -40,11 +41,12 @@ public abstract class Character
     public bool IsAttack = true;
 
     [Inject]
-    public void Construct(IStaticDataService staticDataService, ItemsInWorld itemsInWorld, IGameMode gameMode)
+    public void Construct(IStaticDataService staticDataService, ItemsInWorld itemsInWorld, IGameMode gameMode, ICameraService cameraService)
     {
         _staticDataService = staticDataService;
         _itemsInWorld = itemsInWorld;
         _gameMode = gameMode;
+        _cameraService = cameraService;
 
         _gameMode.StealsMod += OnStealsMod;
         _gameMode.FigthMod += OnFigthMod;
@@ -109,7 +111,20 @@ public abstract class Character
         int world = _staticDataService.CurrentRoom;
 
         if (_staticDataService.GetWorld(world)[0].x * 2 < Mathf.Abs(newPos.x) || _staticDataService.GetWorld(world)[0].y * 2 < Mathf.Abs(newPos.y))
-            return _startPos;
+        {
+            if (_staticDataService.GetWorld(world)[0].x * 2 < Mathf.Abs(newPos.x))
+            {
+                _startPos *= new Vector2(-1, 1);
+            }
+            else
+            {
+                _startPos *= new Vector2(1, -1);
+            }
+
+            newPos = UpdatePos(direction);
+
+            return newPos;
+        }
 
         foreach (var env in _environments)
         {
