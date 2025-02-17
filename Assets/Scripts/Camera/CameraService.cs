@@ -86,17 +86,18 @@ public class CameraService: ISetupCamera, ICameraService
         ResetCameraRotation();
     }
 
-    public void ForceCamera()
+    public void ForceCamera(Vector3 newPos)
     {
         Transform look = _cinemachineVirtualCamera.LookAt;
         Transform follow = _cinemachineVirtualCamera.Follow;
 
-        _cinemachineVirtualCamera.enabled = false;
+        _cinemachineVirtualCamera.Follow = null;
+        _cinemachineVirtualCamera.LookAt = null;
 
-        _cinemachineVirtualCamera.transform.position = follow.position;
-        _cinemachineVirtualCamera.transform.rotation = _cinemachineVirtualCamera.transform.rotation;
+        _cinemachineVirtualCamera.transform.localPosition = new Vector3(newPos.x, newPos.y, _cinemachineVirtualCamera.transform.localPosition.z);
 
-        _cinemachineVirtualCamera.enabled = true;
+        _cinemachineVirtualCamera.Follow = follow;
+        _cinemachineVirtualCamera.LookAt = look;
     }
 
     private void ResetCameraRotation()
@@ -129,5 +130,5 @@ public interface ICameraService
 
     public void CancelLookAt();
 
-    public void ForceCamera();
+    public void ForceCamera(Vector3 newPos);
 }
