@@ -110,6 +110,8 @@ public class StageFactory : IStageFactory
 
             //_player.Character.EnemyList.Add(environmentComponent.Character);
         }
+
+        _player.Character.SetEnvironments(_environments);
     }
 
     //test idea

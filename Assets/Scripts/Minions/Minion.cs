@@ -17,8 +17,8 @@ public class Minion : MonoBehaviour
     {
         _gameMode = gameMode;
 
-        _gameMode.FigthMod += OnFightMode;
-        _gameMode.StealsMod += OnStealsMode;
+        _gameMode.FightMod += OnFightMode;
+        _gameMode.StealthMod += OnStealsMode;
     }
 
     private void Start()

@@ -5,15 +5,18 @@ using UnityEngine;
 
 public class GameModeController : IGameMode
 {
+    private GameMod mod = GameMod.Peace;
+
     private Action _stealsMod;
     private Action _fightMode;
-    private Action _blockStealsMod;
+    private Action _peaceMod;
+    private Action _blockPeaceMods;
     private Action _autoBattleMod;
-    public Action StealsMod { get => _stealsMod; set { _stealsMod = value ;} }
+    public Action StealthMod { get => _stealsMod; set { _stealsMod = value ;} }
 
-    public Action FigthMod { get => _fightMode; set { _fightMode = value; } }
+    public Action FightMod { get => _fightMode; set { _fightMode = value; } }
 
-    public Action BlockStealsMod { get => _blockStealsMod; set { _blockStealsMod = value; } }
+    public Action PeaceMod { get => _peaceMod; set { _peaceMod = value; } }
 
     public Action AutoBattleMod { get => _autoBattleMod; set { _autoBattleMod = value; } }
 
@@ -21,25 +24,58 @@ public class GameModeController : IGameMode
 
     public void StealsModOn()
     {
-        if(_isBlock)
+        if (_isBlock)
+        {
+            mod = GameMod.Fight;
             _fightMode?.Invoke();
+        }
         else
+        {
+            mod = GameMod.Peace;
             _stealsMod?.Invoke();
+        }
     }
 
-    public void FightModOn()
+    public void PeaceModOn()
     {
-        _fightMode?.Invoke();
+        if (_isBlock)
+        {
+            mod = GameMod.Fight;
+            _fightMode?.Invoke();
+        }
+        else
+        {
+            mod = GameMod.Peace;
+            _peaceMod?.Invoke();
+        }
     }
 
-    public void BlockStealMode(bool isBlock)
+    public void ReturnLastMod()
+    {
+        switch (mod)
+        {
+            case GameMod.Peace:
+                _peaceMod?.Invoke();
+                break;
+            case GameMod.Fight:
+                _fightMode?.Invoke();
+                break;
+        }
+    }
+
+    public void BlockPeaceMods(bool isBlock)
     {
         _isBlock = isBlock;
 
         if (_isBlock)
         {
-            _blockStealsMod?.Invoke();
+            mod = GameMod.Fight;
             _fightMode?.Invoke();
+        }
+        else
+        {
+            mod = GameMod.Peace;
+            _peaceMod?.Invoke();
         }
     }
 
@@ -51,13 +87,19 @@ public class GameModeController : IGameMode
 
 public interface IGameMode 
 {
-    public Action StealsMod { get; set; }
-    public Action FigthMod { get; set; }
-    public Action BlockStealsMod { get; set; }
+    public Action StealthMod { get; set; }
+    public Action FightMod { get; set; }
+    public Action PeaceMod { get; set; }
     public Action AutoBattleMod { get; set; }
 
     public void StealsModOn();
-    public void FightModOn();
-    public void BlockStealMode(bool isBlock);
+    public void ReturnLastMod();
+    public void PeaceModOn();
+    public void BlockPeaceMods(bool isBlock);
     public void AutoBattleModOn();
+}
+
+public enum GameMod
+{
+    Peace, Fight
 }

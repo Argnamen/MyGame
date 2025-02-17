@@ -24,8 +24,8 @@ public class CameraService: ISetupCamera, ICameraService
         _gameMode = gameMode;
         _staticDataService = staticDataService;
 
-        _gameMode.StealsMod += StealsCameraOn;
-        _gameMode.FigthMod += FightCameraOn;
+        _gameMode.StealthMod += StealsCameraOn;
+        _gameMode.FightMod += FightCameraOn;
     }
 
     public void SetupVirtualCamera(Transform transform, bool isMain)

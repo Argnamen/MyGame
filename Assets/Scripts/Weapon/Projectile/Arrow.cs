@@ -43,8 +43,6 @@ public class Arrow : MonoBehaviour
             projectileObject.UpdateHP(-1);
 
             yield return new WaitForSeconds(1f);
-
-            Debug.Log("AAAAAAAAAAAAAAAAAAAA");
         }
     }
 

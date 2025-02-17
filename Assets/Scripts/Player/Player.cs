@@ -16,6 +16,8 @@ public class Player : MonoBehaviour
 
     private float _inputLag = 0.3f;
     private bool _damageOn = false;
+    private bool _peaceOn = true;
+    private bool _isAuto = false;
     private bool _cameraUpdate = true;
 
     private Color32 DamageColor = new Color32(181, 0, 0, 255);
@@ -35,15 +37,10 @@ public class Player : MonoBehaviour
     {
         _inputService = inputService;
 
-        _gameMode.AutoBattleMod += Attack;
+        _gameMode.AutoBattleMod += AutoAttackMod;
+        _gameMode.PeaceMod += PeaceMod;
 
-        Character.IsAttack = _damageOn;
-    }
-
-    private IEnumerator DamageLag()
-    {
-        yield return new WaitForSeconds(Character.Weapon.Uptime);
-        _damageOn = false;
+        Character.IsPeace = _peaceOn;
     }
 
     private IEnumerator UpdateCameraPos()
@@ -62,16 +59,46 @@ public class Player : MonoBehaviour
         sequence.Append(spriteRenderer.DOColor(baseColor, 0.1f));
     }
 
+    private void AutoAttackMod()
+    {
+        _isAuto = !_isAuto;
+
+        Debug.Log("IsAutoAttack " +  _isAuto);
+
+        Attack();
+    }
+
+    private void PeaceMod()
+    {
+        _peaceOn = !_peaceOn;
+        Character.IsPeace = _peaceOn;
+    }
+
     private void Attack()
     {
-        _damageOn = !_damageOn;
-        Character.IsAttack = _damageOn;
+        Character[] attackCharacters = Character.EnemyList.ToArray();
+
+        if (_peaceOn)
+        {
+            attackCharacters = new Character[Character.Environments.Length];
+
+            Debug.Log("Peace " + Character.Environments.Length);
+
+            for (int i = 0; i < Character.Environments.Length; i++)
+            {
+                attackCharacters[i] = Character.Environments[i].Character;
+            }
+        }
+
+        if (_battleCoroutine != null)
+            StopCoroutine(_battleCoroutine);
+
+        _battleCoroutine = StartCoroutine(Character.Damage(attackCharacters, _isAuto));
     }
 
     private void Start()
     {
         Character.DamageEvent.AddListener(() => UpdateBlickColor(DamageColor));
-        StartCoroutine(Character.Damage(Character.EnemyList.ToArray(), true));
     }
 
     private void Update()

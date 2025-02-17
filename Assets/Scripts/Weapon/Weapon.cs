@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
 using Zenject;
 
@@ -13,6 +14,8 @@ public class Weapon
     public string Id;
 
     public TypeWeapon Type;
+
+    public bool IsUptime = false;
 
     [Inject]
     protected DiContainer _diContainer;
@@ -37,6 +40,15 @@ public class Weapon
     public virtual bool CreateProjectile(Character spawner, Weapon weapon, Character target, Character[] targets)
     {
         return false;
+    }
+
+    public async void UpdateUptime()
+    {
+        IsUptime = true;
+
+        await Task.Delay((int)(1000 * Uptime));
+
+        IsUptime = false;
     }
 }
 

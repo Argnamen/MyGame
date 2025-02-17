@@ -35,9 +35,11 @@ public class InputService
         _playerInput.actions["LookAt"].canceled += OnLookAtCanceled;
 
         _playerInput.actions["Steals"].performed += OnStealsMod;
-        _playerInput.actions["Steals"].canceled += OnFightMod;
+        _playerInput.actions["Steals"].canceled += ReturnLastMod;
 
         _playerInput.actions["Fight"].performed += OnAutoAttack;
+
+        _playerInput.actions["Peace"].performed += OnPeaceMod;
     }
 
 
@@ -66,9 +68,14 @@ public class InputService
         _gameMode.StealsModOn();
     }
 
-    private void OnFightMod(InputAction.CallbackContext context)
+    private void OnPeaceMod(InputAction.CallbackContext context)
     {
-        _gameMode.FightModOn();
+        _gameMode.PeaceModOn();
+    }
+
+    private void ReturnLastMod(InputAction.CallbackContext context)
+    {
+        _gameMode.ReturnLastMod();
     }
 
     

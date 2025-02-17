@@ -59,7 +59,7 @@ public class Enemy : Character
 
         PlayerFound();
 
-        _gameMode.BlockStealMode(_playerFound);
+        _gameMode.BlockPeaceMods(_playerFound);
 
         for (int i = 0; i < _minions.Length; i++)
         {
@@ -83,11 +83,6 @@ public class Enemy : Character
     }
 
     private void PlayerFound()
-    {
-        _playerFound = true;
-    }
-
-    public override void BlockSteals()
     {
         _playerFound = true;
     }

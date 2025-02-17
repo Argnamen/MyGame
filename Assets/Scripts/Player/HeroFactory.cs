@@ -38,15 +38,18 @@ public class HeroFactory : IHeroFactory
         List<Vector3> world = _staticDataService.GetWorld(_staticDataService.CurrentRoom);
 
         Bow weapon = new Bow(_diContainer, _staticDataService, _itemsInWorld, TypeWeapon.Range, "Bow", 10, 50f, 5f, 90);
+        Sword tool = new Sword(TypeWeapon.Melee, "Tool", 50, 1, 1, 180);
+
         _player = _diContainer.InstantiatePrefabForComponent<Player>(playerPrefab);
 
         _player.transform.position = new Vector3(0,-(world[_staticDataService.CurrentRoom].y * 2) + world[_staticDataService.CurrentRoom].y % 2, world[_staticDataService.CurrentRoom].z);
 
         Debug.Log("Player instance created.");
 
-        PlayerCharacter playerCharacter = new PlayerCharacter(100, 1f, 1f, weapon, _player.transform.position, _environments.ToArray(), _staticDataService, _itemsInWorld);
+        PlayerCharacter playerCharacter = new PlayerCharacter(100, 1f, 1f, weapon, tool, _player.transform.position, _environments.ToArray(), _staticDataService, _itemsInWorld);
         playerCharacter.Inventory = new Inventory();
         playerCharacter.Inventory.AddItem(new Item(weapon));
+        playerCharacter.Inventory.AddItem(new Item(tool));
         _player.Character = playerCharacter;
 
         Debug.Log("PlayerCharacter instance created and assigned to Player.");

@@ -18,6 +18,7 @@ public abstract class Character
     protected float _defautSpead;
 
     public Weapon Weapon;
+    public Weapon Tool;
 
     protected Vector2 _startPos;
 
@@ -34,11 +35,9 @@ public abstract class Character
     public UnityEvent DeathEvent = new UnityEvent();
     public Inventory Inventory;
 
-    protected bool _isDamageUpTime = false;
-
     protected bool _isStealsModOn = false;
 
-    public bool IsAttack = true;
+    public bool IsPeace = true;
 
     [Inject]
     public void Construct(IStaticDataService staticDataService, ItemsInWorld itemsInWorld, IGameMode gameMode, ICameraService cameraService)
@@ -48,9 +47,8 @@ public abstract class Character
         _gameMode = gameMode;
         _cameraService = cameraService;
 
-        _gameMode.StealsMod += OnStealsMod;
-        _gameMode.FigthMod += OnFigthMod;
-        _gameMode.BlockStealsMod += BlockSteals;
+        _gameMode.StealthMod += OnStealsMod;
+        _gameMode.FightMod += OnFigthMod;
     }
 
     public Character(int healt, float spead, float size, Weapon weapon, Vector2 startPos, Environment[] environments)
@@ -64,6 +62,9 @@ public abstract class Character
 
         _size = size;
         Weapon = weapon;
+
+        if (Tool == null)
+            Tool = weapon;
 
         Inventory = new Inventory();
     }
@@ -82,6 +83,9 @@ public abstract class Character
         _size = size;
         Weapon = weapon;
 
+        if (Tool == null)
+            Tool = weapon;
+
         Inventory = new Inventory();
     }
 
@@ -97,11 +101,6 @@ public abstract class Character
         _isStealsModOn = false;
 
         _spead = _defautSpead;
-    }
-
-    public virtual void BlockSteals()
-    {
-
     }
 
     public virtual Vector2 Move(Direction direction)
@@ -139,7 +138,16 @@ public abstract class Character
 
     public virtual void Attack(Character enemy)
     {
-        enemy.UpdateHP(-Weapon.Damage);
+        Weapon weapon = Weapon;
+
+        if (IsPeace)
+            weapon = Tool;
+        else
+            weapon = Weapon;
+
+        enemy.UpdateHP(-weapon.Damage);
+
+        Debug.Log(enemy.HP);
     }
 
     public virtual void UpdateHP(int hp)
@@ -204,23 +212,33 @@ public abstract class Character
 
     public virtual IEnumerator Damage(Character[] evilCharacters, bool isAuto)
     {
-        if (_isDamageUpTime)
+        Weapon weapon = Weapon;
+
+        if (IsPeace)
+            weapon = Tool;
+        else
+            weapon = Weapon;
+
+        if (weapon.IsUptime)
             yield break;
-
-        _isDamageUpTime = true;
-
-        while (isAuto)
+        
+        do
         {
-            if(!IsAttack)
+            if (weapon.IsUptime && isAuto)
             {
                 yield return new WaitForFixedUpdate();
                 continue;
             }
 
-            if (_isStealsModOn)
+            Debug.Log("AAAAAAAAAAAAAAAAAAAAAAA " + weapon.Damage + " " + weapon.Id);
+
+            if (isAuto)
             {
-                yield return new WaitForFixedUpdate();
-                continue;
+                if (IsPeace && _isStealsModOn)
+                {
+                    yield return new WaitForFixedUpdate();
+                    continue;
+                }
             }
 
             int c = 0;
@@ -234,14 +252,14 @@ public abstract class Character
                 {
                     float distance = Vector2.Distance(Position, evilCharacters[i].Position) - evilCharacters[i].Size;
 
-                    if (distance <= Weapon.Radius)
+                    if (distance <= weapon.Radius)
                     {
-                        if (centralEnemy == null || (distance < minDistance && minDistance > Weapon.Radius))
+                        if (centralEnemy == null || (distance < minDistance && minDistance > weapon.Radius))
                         {
                             minDistance = distance;
                             centralEnemy = evilCharacters[i];
                         }
-                        else if (centralEnemy == null || (minDistance <= Weapon.Radius && evilCharacters[i].HP < lowestHP))
+                        else if (centralEnemy == null || (minDistance <= weapon.Radius && evilCharacters[i].HP < lowestHP))
                         {
                             centralEnemy = evilCharacters[i];
                             lowestHP = evilCharacters[i].HP;
@@ -262,17 +280,17 @@ public abstract class Character
                     {
                         float distance = Vector2.Distance(Position, evilCharacters[i].Position) - evilCharacters[i].Size;
 
-                        if (distance <= Weapon.Radius)
+                        if (distance <= weapon.Radius)
                         {
                             Vector2 directionToEnemy = (evilCharacters[i].Position - Position).normalized;
                             Vector2 directionToCentral = (centralPoint - Position).normalized;
                             float angleToEnemy = Vector2.SignedAngle(directionToCentral, directionToEnemy);
 
-                            if (Mathf.Abs(angleToEnemy) <= Weapon.Corner / 2)
+                            if (Mathf.Abs(angleToEnemy) <= weapon.Corner / 2)
                             {
                                 c++;
 
-                                if (Weapon.CreateProjectile(this, Weapon, centralEnemy, evilCharacters))
+                                if (weapon.CreateProjectile(this, weapon, centralEnemy, evilCharacters))
                                     break;
 
                                 Attack(evilCharacters[i]);
@@ -286,15 +304,12 @@ public abstract class Character
 
             if (c > 0)
             {
-                yield return new WaitForSeconds(Weapon.Uptime);
+                weapon.UpdateUptime();
             }
-            else
-            {
-                yield return new WaitForFixedUpdate();
-            }
-        }
 
-        _isDamageUpTime = false;
+            yield return new WaitForFixedUpdate();
+        }
+        while (isAuto);
     }
 
     public enum Direction

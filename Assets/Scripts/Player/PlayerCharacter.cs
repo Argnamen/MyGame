@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using Zenject;
 
@@ -6,14 +7,20 @@ public class PlayerCharacter : Character
 {
     public List<Character> EnemyList = new List<Character>();
 
-    public PlayerCharacter(int healt, float spead, float size, Weapon weapon, Vector2 startPos, Environment[] environments, IStaticDataService staticDataService, ItemsInWorld itemsInWorld)
+    public PlayerCharacter(int healt, float spead, float size, Weapon weapon, Weapon tool, Vector2 startPos, Environment[] environments, IStaticDataService staticDataService, ItemsInWorld itemsInWorld)
         : base(healt, spead / 17f, size, weapon, startPos, environments, staticDataService, itemsInWorld)
     {
+        Tool = tool;
     }
 
     public override Vector2 Move(Direction direction)
     {
         return base.Move(direction);
+    }
+
+    public void SetEnvironments(List<Environment> environments)
+    {
+        _environments = environments.ToArray();
     }
 
     public Vector2 GetClosestEnemy()
@@ -42,6 +49,16 @@ public class PlayerCharacter : Character
         }
 
         return centralEnemy.Position;
+    }
+
+    public void UpdateWeapon(string id)
+    {
+        Weapon weapon = Inventory.GetAllItems().ToList().Find(x => x.ID == id).Weapon;
+
+        if (weapon != null)
+        {
+            Weapon = Inventory.GetAllItems().ToList().Find(x => x.ID == id).Weapon;
+        }
     }
 }
 
