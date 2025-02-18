@@ -8,13 +8,13 @@ public class GameModeController : IGameMode
     private GameMod mod = GameMod.Peace;
 
     private Action _stealsMod;
-    private Action _fightMode;
+    private Action _returnMod;
     private Action _peaceMod;
     private Action _blockPeaceMods;
     private Action _autoBattleMod;
     public Action StealthMod { get => _stealsMod; set { _stealsMod = value ;} }
 
-    public Action FightMod { get => _fightMode; set { _fightMode = value; } }
+    public Action ReturnMod { get => _returnMod; set { _returnMod = value; } }
 
     public Action PeaceMod { get => _peaceMod; set { _peaceMod = value; } }
 
@@ -27,7 +27,7 @@ public class GameModeController : IGameMode
         if (_isBlock)
         {
             mod = GameMod.Fight;
-            _fightMode?.Invoke();
+            _returnMod?.Invoke();
         }
         else
         {
@@ -41,7 +41,7 @@ public class GameModeController : IGameMode
         if (_isBlock)
         {
             mod = GameMod.Fight;
-            _fightMode?.Invoke();
+            _returnMod?.Invoke();
         }
         else
         {
@@ -52,15 +52,7 @@ public class GameModeController : IGameMode
 
     public void ReturnLastMod()
     {
-        switch (mod)
-        {
-            case GameMod.Peace:
-                _peaceMod?.Invoke();
-                break;
-            case GameMod.Fight:
-                _fightMode?.Invoke();
-                break;
-        }
+        _returnMod?.Invoke();
     }
 
     public void BlockPeaceMods(bool isBlock)
@@ -70,7 +62,7 @@ public class GameModeController : IGameMode
         if (_isBlock)
         {
             mod = GameMod.Fight;
-            _fightMode?.Invoke();
+            _returnMod?.Invoke();
         }
         else
         {
@@ -88,7 +80,7 @@ public class GameModeController : IGameMode
 public interface IGameMode 
 {
     public Action StealthMod { get; set; }
-    public Action FightMod { get; set; }
+    public Action ReturnMod { get; set; }
     public Action PeaceMod { get; set; }
     public Action AutoBattleMod { get; set; }
 

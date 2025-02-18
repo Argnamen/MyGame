@@ -7,6 +7,14 @@ public class PlayerCharacter : Character
 {
     public List<Character> EnemyList = new List<Character>();
 
+    private ItemsInWorld _itemsInWorld;
+
+    [Inject]
+    public void Construct(ItemsInWorld itemsInWorld)
+    {
+        _itemsInWorld = itemsInWorld;
+    }
+
     public PlayerCharacter(int healt, float spead, float size, Weapon weapon, Weapon tool, Vector2 startPos, Environment[] environments, IStaticDataService staticDataService, ItemsInWorld itemsInWorld)
         : base(healt, spead / 17f, size, weapon, startPos, environments, staticDataService, itemsInWorld)
     {
@@ -15,6 +23,20 @@ public class PlayerCharacter : Character
 
     public override Vector2 Move(Direction direction)
     {
+        foreach (var item in _itemsInWorld.PointsItems)
+        {
+            if (Vector2.Distance(item.Key, Position) <= Size)
+            {
+                Inventory.AddItem(item.Value.Item);
+
+                item.Value.DeathAction();
+
+                _itemsInWorld.PointsItems.Remove(item.Key);
+
+                break;
+            }
+        }
+
         return base.Move(direction);
     }
 

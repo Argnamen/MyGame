@@ -17,7 +17,7 @@ public class Minion : MonoBehaviour
     {
         _gameMode = gameMode;
 
-        _gameMode.FightMod += OnFightMode;
+        _gameMode.ReturnMod += ReturnMode;
         _gameMode.StealthMod += OnStealsMode;
     }
 
@@ -30,7 +30,7 @@ public class Minion : MonoBehaviour
 
         _visiabilityObject.localScale = Vector3.one * (Character.VisibilityRange * 2f);
 
-        OnFightMode();
+        ReturnMode();
     }
 
     private void Update()
@@ -73,7 +73,7 @@ public class Minion : MonoBehaviour
         _visiabilityObject.gameObject.SetActive(true);
     }
 
-    private void OnFightMode()
+    private void ReturnMode()
     {
         _visiabilityObject.gameObject.SetActive(false);
     }

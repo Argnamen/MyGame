@@ -48,7 +48,7 @@ public abstract class Character
         _cameraService = cameraService;
 
         _gameMode.StealthMod += OnStealsMod;
-        _gameMode.FightMod += OnFigthMod;
+        _gameMode.ReturnMod += ReturnMode;
     }
 
     public Character(int healt, float spead, float size, Weapon weapon, Vector2 startPos, Environment[] environments)
@@ -65,8 +65,6 @@ public abstract class Character
 
         if (Tool == null)
             Tool = weapon;
-
-        Inventory = new Inventory();
     }
 
     public Character(int healt, float spead, float size, Weapon weapon, Vector2 startPos, Environment[] environments, IStaticDataService staticDataService, ItemsInWorld itemsInWorld)
@@ -85,8 +83,6 @@ public abstract class Character
 
         if (Tool == null)
             Tool = weapon;
-
-        Inventory = new Inventory();
     }
 
     public virtual void OnStealsMod()
@@ -96,7 +92,7 @@ public abstract class Character
         _spead = _defautSpead / 2;
     }
 
-    public virtual void OnFigthMod() 
+    public virtual void ReturnMode() 
     {
         _isStealsModOn = false;
 
@@ -174,9 +170,10 @@ public abstract class Character
         foreach (var item in items)
         {
             var drop = Inventory.DropItem(item);
+
             if (drop != null)
             {
-                var dropObject = (GameObject)Resources.Load($"Prefab/{drop.ID}");
+                var dropObject = GameObject.Instantiate((GameObject)Resources.Load($"Prefab/{drop.ID}"));
                 dropObject.transform.position = Position + Vector2.one * Random.value;
                 dropObject.GetComponent<ObjectInWorld>().Item = drop;
                 _itemsInWorld.PointsItems.Add(dropObject.transform.position, dropObject.GetComponent<ObjectInWorld>());
@@ -229,8 +226,6 @@ public abstract class Character
                 yield return new WaitForFixedUpdate();
                 continue;
             }
-
-            Debug.Log("AAAAAAAAAAAAAAAAAAAAAAA " + weapon.Damage + " " + weapon.Id);
 
             if (isAuto)
             {

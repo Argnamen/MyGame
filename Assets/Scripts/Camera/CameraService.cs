@@ -25,7 +25,7 @@ public class CameraService: ISetupCamera, ICameraService
         _staticDataService = staticDataService;
 
         _gameMode.StealthMod += StealsCameraOn;
-        _gameMode.FightMod += FightCameraOn;
+        _gameMode.ReturnMod += ReturnModCamera;
     }
 
     public void SetupVirtualCamera(Transform transform, bool isMain)
@@ -112,7 +112,7 @@ public class CameraService: ISetupCamera, ICameraService
         _stealsCamera.enabled = true;
     }
 
-    private void FightCameraOn()
+    private void ReturnModCamera()
     {
         _stealsCamera.enabled = false;
         _cinemachineVirtualCamera.enabled = true;
