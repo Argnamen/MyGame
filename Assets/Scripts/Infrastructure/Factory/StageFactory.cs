@@ -119,37 +119,69 @@ public class StageFactory : IStageFactory
     {
         Vector3 world = _staticDataService.GetWorld(_staticDataService.CurrentRoom)[0];
 
+        Transform origTransform = origObject.transform;
+
+        GameObject obj = GameObject.Instantiate(origObject, origTransform);
+
+        int worldSize = 4;
+
         for (int g = 0; g < 8; g++)
         {
-            GameObject obj = GameObject.Instantiate(origObject,origObject.transform);
+            obj.name = origObject.name;
+            if(g != 0)
+                obj = GameObject.Instantiate(obj, origTransform);
 
             MonoBehaviour.Destroy(obj.GetComponent<Environment>());
 
             switch (g)
             {
                 case 0:
-                    obj.transform.position = new Vector3(origObject.transform.position.x, origObject.transform.position.y + world.y * 2, origObject.transform.position.z);
+                    obj.transform.localPosition = new Vector3(
+                        0,
+                        0 + world.y * worldSize,
+                        0);
                     break;
                 case 1:
-                    obj.transform.position = new Vector3(origObject.transform.position.x + world.x * 2, origObject.transform.position.y + world.y * 2, origObject.transform.position.z);
+                    obj.transform.localPosition = new Vector3(
+                        0 + world.x * worldSize,
+                        0 + world.y * worldSize,
+                        0);
                     break;
                 case 2:
-                    obj.transform.position = new Vector3(origObject.transform.position.x + world.x * 2, origObject.transform.position.y, origObject.transform.position.z);
+                    obj.transform.localPosition = new Vector3(
+                        0 + world.x * worldSize,
+                        0,
+                        0);
                     break;
                 case 3:
-                    obj.transform.position = new Vector3(origObject.transform.position.x + world.x * 2, origObject.transform.position.y - world.y * 2, origObject.transform.position.z);
+                    obj.transform.localPosition = new Vector3(
+                        0 + world.x * worldSize,
+                        0 - world.y * worldSize,
+                        0);
                     break;
                 case 4:
-                    obj.transform.position = new Vector3(origObject.transform.position.x, origObject.transform.position.y - world.y * 2, origObject.transform.position.z);
+                    obj.transform.localPosition = new Vector3(
+                        0,
+                        0 - world.y * worldSize,
+                        0);
                     break;
                 case 5:
-                    obj.transform.position = new Vector3(origObject.transform.position.x - world.x * 2, origObject.transform.position.y - world.y * 2, origObject.transform.position.z);
+                    obj.transform.localPosition = new Vector3(
+                        0 - world.x * worldSize,
+                        0 - world.y * worldSize,
+                        0);
                     break;
                 case 6:
-                    obj.transform.position = new Vector3(origObject.transform.position.x - world.x * 2, origObject.transform.position.y, origObject.transform.position.z);
+                    obj.transform.localPosition = new Vector3(
+                        0 - world.x * worldSize,
+                        0,
+                        0);
                     break;
                 case 7:
-                    obj.transform.position = new Vector3(origObject.transform.position.x - world.x * 2, origObject.transform.position.y + world.y * 2, origObject.transform.position.z);
+                    obj.transform.localPosition = new Vector3(
+                        0 - world.x * worldSize,
+                        0 + world.y * worldSize,
+                        0);
                     break;
             }
         }
