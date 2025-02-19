@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static UnityEditor.Progress;
 
 [System.Serializable]
 public class Inventory
@@ -9,8 +10,31 @@ public class Inventory
 
     public void AddItem(Item item)
     {
+        Item itemInv = _items.Find(x => x.ID == item.ID);
+
+        if (itemInv != null)
+        {
+            itemInv.Count += item.Count;
+        }
+        else
+        {
+            itemInv = item;
+        }
+
         _items.Add(item);
-        Debug.Log($"Items In Inventory: {_items.Count} Item 0 count:{_items.FindAll(x => x == _items[0]).Count}");
+        Debug.Log($"Items In Inventory: {itemInv.Count} Item 0 count:{itemInv.Count}");
+    }
+
+    public Item GetItem(Item item)
+    {
+        Item itemInv = _items.Find(x => x.ID == item.ID);
+
+        if (itemInv == null)
+        {
+            itemInv = item;
+        }
+
+        return itemInv;
     }
 
     public Item[] GetAllItems()

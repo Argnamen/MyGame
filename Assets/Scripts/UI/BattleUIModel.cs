@@ -15,6 +15,11 @@ public class BattleUIModel : IBattleUIModel
     {
         _battleUiView.UpdateHealth(health);
     }
+
+    public void BindInventory(InventoryUIModel inventoryUIModel)
+    {
+        _battleUiView.InventoryOpen.onClick.AddListener(inventoryUIModel.Open);
+    }
 }
 
 

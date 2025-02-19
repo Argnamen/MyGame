@@ -104,7 +104,7 @@ public class StageFactory : IStageFactory
             environmentComponent.Initialize(rockCharacter);
 
             rockCharacter.Inventory = new Inventory();
-            rockCharacter.Inventory.AddItem(new Item(ItemType.Resources, "Stone"));
+            rockCharacter.Inventory.AddItem(new Item(ItemType.Resources, "Stone", Random.Range(1, 10)));
 
             SpawnClone(environmentGameObject);
 

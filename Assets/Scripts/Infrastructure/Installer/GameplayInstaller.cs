@@ -9,11 +9,11 @@ public class GameplayInstaller : MonoInstaller
     [SerializeField] private GameObject _playerInputPrefab;
     [SerializeField] private CinemachineVirtualCamera _playerVirtualCamera;
     [SerializeField] private BattleUiView _battleUiView;
+    [SerializeField] private InventoryUIView _inventoryUIView;
 
     public override void InstallBindings()
     {
         //BindInventory();
-        BindTestCharacterFactory();
 
 
         Container.Bind(typeof(ISetupCamera), typeof(ICameraService)).To<CameraService>().AsSingle();
@@ -23,6 +23,10 @@ public class GameplayInstaller : MonoInstaller
         Container.Bind<BattleUiView>().FromComponentInNewPrefab(_battleUiView).AsTransient();
         Container.Bind<BattleUIModel>().AsTransient();
         Container.BindFactory<BattleUIModel, BattleUIModelFactory>().AsSingle();
+
+        Container.Bind<InventoryUIView>().FromComponentInNewPrefab(_inventoryUIView).AsTransient();
+        Container.Bind<InventoryUIModel>().AsTransient();
+        Container.BindFactory<InventoryUIModel, InventoryUIModelFactory>().AsSingle();
     }
 
     private void BindInventory()
@@ -30,12 +34,6 @@ public class GameplayInstaller : MonoInstaller
         Container.BindInterfacesAndSelfTo<InventoryService>()
             .AsSingle()
             .NonLazy();
-    }
-
-    private void BindTestCharacterFactory()
-    {
-        Container.BindFactory<int, float, float, Weapon, Vector2, Environment[], TestCharacter, TestCharacter.Factory>()
-            .FromFactory<CustomTestCharacterFactory>();
     }
 
     public class CustomTestCharacterFactory : IFactory<int, float, float, Weapon, Vector2, Environment[], TestCharacter>

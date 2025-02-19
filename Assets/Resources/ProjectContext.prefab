@@ -189,6 +189,7 @@ MonoBehaviour:
   _playerInputPrefab: {fileID: 4327001009560997017}
   _playerVirtualCamera: {fileID: 3971513081909445143}
   _battleUiView: {fileID: 5068636803032489652, guid: 5d003286c4486554fac714ba0db881d7, type: 3}
+  _inventoryUIView: {fileID: 833472787776710834, guid: f5cd57079d3641449bf49c90e1fda733, type: 3}
 --- !u!1 &3471142788042636748
 GameObject:
   m_ObjectHideFlags: 0

@@ -13,10 +13,14 @@ public class Item
     public ItemType Type => _type;
     public Weapon Weapon => _weapon;
 
-    public Item(ItemType type, string id)
+    public int Count;
+
+    public Item(ItemType type, string id, int count)
     {
         _type = type;
         _id = id;
+
+        Count = count;
     }
 
     public Item(Weapon weapon)
@@ -24,6 +28,8 @@ public class Item
         _type = ItemType.Item;
         _id = weapon.Id;
         _weapon = weapon;
+
+        Count = 1;
     }
 }
 

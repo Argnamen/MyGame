@@ -1,11 +1,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.Events;
 using Zenject;
 
 public class PlayerCharacter : Character
 {
     public List<Character> EnemyList = new List<Character>();
+
+    public UnityEvent<Item> UpdateInventory = new UnityEvent<Item>();
 
     private ItemsInWorld _itemsInWorld;
 
@@ -32,6 +35,8 @@ public class PlayerCharacter : Character
                 item.Value.DeathAction();
 
                 _itemsInWorld.PointsItems.Remove(item.Key);
+
+                UpdateInventory.Invoke(Inventory.GetItem(item.Value.Item));
 
                 break;
             }

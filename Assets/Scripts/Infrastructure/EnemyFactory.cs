@@ -46,7 +46,7 @@ public class EnemyFactory : IEnemyFactory
             _minions[i].Character = enemyCharacter;
 
             _minions[i].Character.Inventory = new Inventory();
-            _minions[i].Character.Inventory.AddItem(new Item(ItemType.Resources, "Stone"));
+            _minions[i].Character.Inventory.AddItem(new Item(ItemType.Resources, "Stone", 1));
             _minions[i].Character.Inventory.AddItem(new Item(weapon));
 
             _player.Character.EnemyList.Add(enemyCharacter);
